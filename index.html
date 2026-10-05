@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Neural — World-Class Digital Products</title>
+<title>마중 — World-Class Digital Products</title>
 <style>
 /* ========================= FONT ========================= */
 @font-face{
@@ -216,7 +216,8 @@ a:focus-visible{outline:2px solid #9fe0ff;outline-offset:3px;border-radius:4px}
        width:calc(var(--u)*279.6);height:calc(var(--u)*46.6)}
   .cta .arrow{position:absolute;left:calc(var(--u)*230.8);top:calc(var(--u)*17.8);
               width:calc(var(--u)*16);height:calc(var(--u)*11)}
-  .feats li{position:absolute;width:calc(var(--u)*220);height:calc(var(--u)*20)}
+  .feats li{position:absolute;width:calc(var(--u)*220);height:calc(var(--u)*20);
+            pointer-events:auto;cursor:pointer}
   .feats .chev{position:absolute;left:0;top:0;width:calc(var(--u)*11);height:calc(var(--u)*20)}
   .feats li:nth-child(1){left:calc(var(--u)*360);top:calc(var(--u)*718)}
   .feats li:nth-child(2){left:calc(var(--u)*590);top:calc(var(--u)*719)}
@@ -488,7 +489,7 @@ a:focus-visible{outline:2px solid #9fe0ff;outline-offset:3px;border-radius:4px}
       <path d="M22.9 0 L19.3 0 L15.0 7.6 L18.6 7.6 Z"></path>
       <path d="M22.6 6.9 L19.0 6.9 L14.05 16.4 L17.65 16.4 Z"></path>
     </svg>
-    <span id="word">NEURAL</span>
+    <span id="word">마중</span>
   </a>
   <input class="navtoggle" type="checkbox" id="nav-open">
   <label class="scrim" for="nav-open" aria-hidden="true"></label>
@@ -581,15 +582,16 @@ a:focus-visible{outline:2px solid #9fe0ff;outline-offset:3px;border-radius:4px}
       lastFocus=null;
 
   var C={
-    about:{k:'Studio',t:'About NEURAL',h:
-      '<p>NEURAL is a product studio for teams who refuse to ship the ordinary. '+
+    about:{k:'Studio',t:'About 마중',h:
+      '<p>마중(MAJUNG) is a product studio for teams who refuse to ship the ordinary. '+
       'We pair senior design and engineering into one accountable team that owns '+
       'outcomes — not tickets.</p>'+
       '<h3>How we think</h3>'+
       '<ul><li>Strategy and craft in the same room</li>'+
       '<li>Small teams, senior people, direct access</li>'+
       '<li>We measure impact, not activity</li></ul>'+
-      '<p>Founded by operators who have shipped products used by millions.</p>'},
+      '<p>Founded by operators who have shipped products used by millions.</p>'+
+      '<a class="ov-cta" href="#" data-open="contact">Work with 마중</a>'},
     product:{k:'Platform',t:'The Product',h:
       '<p>A composable platform that takes an idea from prototype to production '+
       'without the usual re-writes.</p>'+
@@ -597,27 +599,63 @@ a:focus-visible{outline:2px solid #9fe0ff;outline-offset:3px;border-radius:4px}
       '<ul><li><strong>Design system</strong> — tokens, components, motion, in code</li>'+
       '<li><strong>App foundation</strong> — auth, billing, analytics wired on day one</li>'+
       '<li><strong>Delivery pipeline</strong> — preview, test, ship continuously</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="contact">Book a walkthrough</a>'},
+      '<a class="ov-cta" href="#" data-open="start">Book a walkthrough</a>'},
     solutions:{k:'Solutions',t:'Solutions',h:
       '<p>Tailored engagements for ambitious teams at any stage.</p>'+
       '<h3>Engagements</h3>'+
       '<ul><li><strong>0→1</strong> — validate and launch a new product</li>'+
       '<li><strong>Scale-up</strong> — rebuild for growth and reliability</li>'+
       '<li><strong>Design partner</strong> — embed with your team long-term</li>'+
-      '<li><strong>Audit</strong> — a clear plan to fix what is slowing you down</li></ul>'},
+      '<li><strong>Audit</strong> — a clear plan to fix what is slowing you down</li></ul>'+
+      '<a class="ov-cta" href="#" data-open="contact">Discuss your project</a>'},
     login:{k:'Access',t:'Log in / Request access',h:
-      '<p>NEURAL is currently invite-only for partner teams.</p>'+
+      '<p>마중 is currently invite-only for partner teams.</p>'+
       '<h3>Already a partner?</h3>'+
       '<p>Use the workspace link in your onboarding email to sign in.</p>'+
       '<h3>New here?</h3>'+
       '<p>Request access and we will reach out within one business day.</p>'+
-      '<a class="ov-cta" href="mailto:access@neural.studio">Request access</a>'},
+      '<a class="ov-cta" href="mailto:access@xn--hz2bo3z.kr">Request access</a>'},
     contact:{k:'Contact',t:'Contact sales',h:
       '<p>Tell us what you are building. We reply to every serious enquiry within '+
       'one business day.</p>'+
       '<h3>Direct</h3>'+
-      '<p><strong>sales@neural.studio</strong><br>+1 (415) 555-0132</p>'+
-      '<a class="ov-cta" href="mailto:sales@neural.studio">Email the team</a>'}
+      '<p><strong>sales@마중.kr</strong><br>+82 2-1234-5678</p>'+
+      '<a class="ov-cta" href="mailto:sales@xn--hz2bo3z.kr">Email the team</a>'},
+    start:{k:'Get started',t:'Get started today',h:
+      '<p>From first call to shipped product — here is how working with 마중 begins.</p>'+
+      '<h3>How it works</h3>'+
+      '<ul><li><strong>1 · Discovery</strong> — a 30-minute call to understand your goal</li>'+
+      '<li><strong>2 · Plan</strong> — scope, timeline and a fixed first milestone</li>'+
+      '<li><strong>3 · Build</strong> — weekly shippable progress, direct access to the team</li></ul>'+
+      '<a class="ov-cta" href="#" data-open="contact">Start the conversation</a>'},
+    f1:{k:'Capability',t:'Strategic partner',h:
+      '<p>We sit at the table from day one — shaping roadmap, scope and priorities '+
+      'with your team, not just executing tickets.</p>'+
+      '<ul><li>Product strategy and prioritisation</li>'+
+      '<li>Honest trade-off calls, backed by data</li>'+
+      '<li>One senior point of contact throughout</li></ul>'+
+      '<a class="ov-cta" href="#" data-open="contact">Talk strategy</a>'},
+    f2:{k:'Capability',t:'End-to-end delivery',h:
+      '<p>Design, engineering, QA and release under one roof. One accountable team '+
+      'owns the outcome from idea to production.</p>'+
+      '<ul><li>Design systems built directly in code</li>'+
+      '<li>Continuous preview, test and ship pipeline</li>'+
+      '<li>No hand-off gaps between design and build</li></ul>'+
+      '<a class="ov-cta" href="#" data-open="start">See the process</a>'},
+    f3:{k:'Capability',t:'Long-term impact',h:
+      '<p>We build for the long run — maintainable systems, clear documentation and '+
+      'clean handover so value keeps compounding after launch.</p>'+
+      '<ul><li>Maintainable, well-documented codebases</li>'+
+      '<li>Knowledge transfer to your team</li>'+
+      '<li>Measured against business outcomes</li></ul>'+
+      '<a class="ov-cta" href="#" data-open="contact">Build for the long run</a>'},
+    f4:{k:'Capability',t:'Long-term impact',h:
+      '<p>We build for the long run — maintainable systems, clear documentation and '+
+      'clean handover so value keeps compounding after launch.</p>'+
+      '<ul><li>Maintainable, well-documented codebases</li>'+
+      '<li>Knowledge transfer to your team</li>'+
+      '<li>Measured against business outcomes</li></ul>'+
+      '<a class="ov-cta" href="#" data-open="contact">Build for the long run</a>'}
   };
 
   function open(key){
@@ -638,6 +676,17 @@ a:focus-visible{outline:2px solid #9fe0ff;outline-offset:3px;border-radius:4px}
   Array.prototype.forEach.call(items,function(a){
     var span=a.querySelector('span[id]'); if(!span) return;
     a.addEventListener('click',function(e){ e.preventDefault(); open(span.id); });
+  });
+
+  /* wire the rest of the content: hero CTA, brand, and the four feature items */
+  var cta=document.querySelector('.cta');
+  if(cta) cta.addEventListener('click',function(e){ e.preventDefault(); open('start'); });
+  var brand=document.querySelector('.brand');
+  if(brand) brand.addEventListener('click',function(e){ e.preventDefault(); open('about'); });
+  Array.prototype.forEach.call(document.querySelectorAll('.feats li'),function(li){
+    var span=li.querySelector('span[id]'); if(!span) return;
+    li.style.cursor='pointer';
+    li.addEventListener('click',function(e){ e.preventDefault(); open(span.id); });
   });
 
   /* close interactions */
