@@ -3,702 +3,862 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>마중 — World-Class Digital Products</title>
+<title>마중 — 거리마다의 정신을 세웁니다</title>
+<script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.className="anim";setTimeout(function(){document.documentElement.classList.remove("anim")},3200);}</script>
+<meta name="description" content="45년 이상, 마중은 인도에서 가장 사려 깊은 부동산 개발을 기획해 온 종합 디벨로퍼입니다.">
 <style>
-/* ========================= FONT ========================= */
-@font-face{
-  font-family:'Sora';
-  src:url(assets/fonts/sora-variable.ttf) format('truetype-variations'),
-      url(https://cdn.jsdelivr.net/gh/googlefonts/sora@main/fonts/Sora%5Bwght%5D.ttf) format('truetype-variations');
-  font-weight:100 900;font-style:normal;font-display:block;
-}
+/* ---------- embedded faces ---------- */
+@font-face{font-family:'Inter S';src:url(assets/fonts/inter-s-400.woff2) format('woff2');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'Inter S';src:url(assets/fonts/inter-s-700.woff2) format('woff2');font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:'Chakra S';src:url(assets/fonts/chakra-s-700.woff2) format('woff2');font-weight:700;font-style:normal;font-display:block}
 
-/* ========================= TOKENS ========================= */
+/* ---------- reference unit ----------
+   Every measurement below is a real pixel value read off the 1280x800 reference.
+   --u is the reference pixel: 1px at 1280x800, and it scales with the viewport,
+   so proportions are preserved while the chrome stays anchored to the real edges. */
 :root{
-  --ink:#ffffff;  --sub:#a2a9b8;  --nav:#fbfdff;  --foot:#f4f8fd;
-  --hair:rgba(196,214,232,.72);   --chev:rgba(214,232,250,.90);
-  --navdim:#e8ecf0;               --feat:#e2ebf5;
-  --veil:6,10,18;
+  --u: clamp(0.68px, min(100vw / 1280, 100vh / 800), 1.72px);
+  --t: var(--u);   /* desktop: content and structure share one scale */
+  --u: clamp(0.68px, min(100vw / 1280, 100dvh / 800), 1.72px);
+  --line: rgba(255,255,255,.13);
+  --cream:#e8d1cb;
+  --ink:#15131b;
+  --hair: max(1px, calc(1 * var(--u)));
+  --nudge: calc(1 * var(--t));   /* Chrome centres these caps ~1px high */
 }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:#04070d;overflow:hidden;
+  font-family:'Inter S',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:geometricPrecision;
+}
+.stage{position:fixed;inset:0;overflow:hidden}
 
-/* ===================== SCALE SYSTEM (desktop unit) ===================== */
+/* ---------- hero image: graded exactly as the reference, cover, centred ---------- */
+.bg{position:absolute;inset:0;background-image:url(assets/img/background.webp);
+    background-size:cover;background-position:50% 50%;background-repeat:no-repeat}
+/* the video box is sized to cover the stage at 16:9 (no object-fit crop, so it can
+   move without exposing an edge). The arch sits ~4% left of centre in the clip:
+   scale up 10% and shift the box right by 4.5% of its own width. */
+.bg video{position:absolute;left:50%;top:50%;display:block;
+          width:max(100vw, 177.78vh);height:max(100vh, 56.25vw);
+          transform:translate(-45.5%,-50%) scale(1.1)}
+/* one clip per chapter, stacked; the chosen one fades up over the last */
+.bg video{opacity:0;transition:opacity .9s ease}
+.bg video.on{opacity:1}
+/* chapter change: the headline drops back into its mask and the paragraph
+   settles out, the copy is swapped, and both return the way they entered */
+.hero .hrise{transition:transform .5s var(--e-mask)}
+.hero .blurb{transition:opacity .4s ease, transform .4s ease}
+.swapping .hrise{transform:translateY(112%)}
+.swapping .blurb{opacity:0;transform:translateY(calc(7*var(--t)))}
+
+/* ---------- frame: 30u inset, 1px hairline, 26u chamfer on all four corners ---------- */
+.frame{position:absolute;left:calc(30*var(--u));top:calc(30*var(--u));
+       right:calc(30*var(--u));bottom:calc(31*var(--u))}
+.ln{position:absolute;background:var(--line)}
+.ln-t{left:calc(26*var(--u));right:calc(26*var(--u));top:0;height:var(--hair)}
+.ln-b{left:calc(26*var(--u));right:calc(26*var(--u));bottom:0;height:var(--hair)}
+.ln-l{top:calc(26*var(--u));bottom:calc(26*var(--u));left:0;width:var(--hair)}
+.ln-r{top:calc(26*var(--u));bottom:calc(26*var(--u));right:0;width:var(--hair)}
+.cn{position:absolute;width:calc(26*var(--u));height:calc(26*var(--u))}
+.cn-tl{left:0;top:0;background:linear-gradient(to bottom right,transparent calc(50% - .65px),var(--line) calc(50% - .65px),var(--line) calc(50% + .65px),transparent calc(50% + .65px))}
+.cn-br{right:0;bottom:0;background:linear-gradient(to bottom right,transparent calc(50% - .65px),var(--line) calc(50% - .65px),var(--line) calc(50% + .65px),transparent calc(50% + .65px))}
+.cn-tr{right:0;top:0;background:linear-gradient(to bottom left,transparent calc(50% - .65px),var(--line) calc(50% - .65px),var(--line) calc(50% + .65px),transparent calc(50% + .65px))}
+.cn-bl{left:0;bottom:0;background:linear-gradient(to bottom left,transparent calc(50% - .65px),var(--line) calc(50% - .65px),var(--line) calc(50% + .65px),transparent calc(50% + .65px))}
+
+/* ---------- shared label face ---------- */
+.lbl{font-family:'Chakra S','Inter S',sans-serif;font-weight:700;
+     font-size:calc(10*var(--t));line-height:1;white-space:nowrap}
+.t{position:relative;top:var(--nudge);display:inline-block;text-align:left;white-space:pre}
+.bg{will-change:transform;transform-origin:50% 50%;backface-visibility:hidden}
+
+/* ---------- masthead ---------- */
+.logo{position:absolute;left:calc(24*var(--t));top:calc(22*var(--t));
+      height:calc(19*var(--t));display:block}
+.logo .wm{display:block;font-family:'Chakra S','Inter S',sans-serif;font-weight:700;
+      font-size:calc(17.5*var(--t));line-height:calc(19*var(--t));color:#fff;
+      letter-spacing:calc(2*var(--t));white-space:nowrap}
+
+.masthead{position:absolute;right:calc(11*var(--t));top:calc(12*var(--t));
+          height:calc(41*var(--t));display:flex;align-items:center}
+.navset{display:contents}
+.links{display:flex;align-items:center;gap:calc(14.4*var(--t));margin-right:calc(18*var(--t))}
+.links a{color:#e3e8f2;text-decoration:none;letter-spacing:calc(.1*var(--t));
+         padding-left:calc(.1*var(--t));opacity:.94;transition:opacity .25s ease,color .25s ease}
+.links a:hover{opacity:1;color:#fff}
+
+.pill{height:calc(41*var(--t));display:flex;align-items:center;text-decoration:none;
+      position:relative;cursor:pointer;border:0;padding:0}
+.pill .ico{flex:none;display:block}
+.enter{width:calc(87*var(--t));padding-left:calc(21*var(--t));
+       background:rgba(255,250,246,.05);
+       -webkit-backdrop-filter:blur(calc(12*var(--t)));backdrop-filter:blur(calc(12*var(--t)));
+       transition:background .3s ease}
+.enter:hover{background:rgba(255,250,246,.075)}
+.enter .ico{width:calc(7*var(--t));height:calc(11*var(--t));fill:#f4f7ff}
+.enter span{color:rgba(255,255,255,.93);margin-left:calc(7*var(--t));
+            letter-spacing:calc(.33*var(--t))}
+
+.menu{width:calc(90*var(--t));padding-left:calc(21*var(--t));background:var(--cream);
+      clip-path:polygon(0 0, calc(100% - 15*var(--t)) 0, 100% calc(15*var(--t)), 100% 100%, 0 100%);
+      transition:background .3s ease}
+.menu:hover{background:var(--cream)}
+.menu .ico{width:calc(10*var(--t));height:calc(10*var(--t));fill:var(--ink)}
+.menu span{color:var(--ink);margin-left:calc(7*var(--t));letter-spacing:calc(.02*var(--t))}
+
+/* ---------- section index ---------- */
+.index{position:absolute;left:calc(10.5*var(--t));top:50%;transform:translateY(calc(-50% + 1.5*var(--t)));
+       list-style:none;margin:0;padding:0}
+.index li{height:calc(26.6*var(--t));display:flex;align-items:center;position:relative}
+.index a{font-family:'Chakra S','Inter S',sans-serif;font-weight:700;font-size:calc(10*var(--t));
+         line-height:1;letter-spacing:calc(1.3*var(--t));text-decoration:none;white-space:nowrap;
+         color:rgba(232,238,250,.3);transition:color .3s ease}
+.index a:hover{color:#e6eaf5}
+.index .on a{color:#e6eaf5}
+.index .on::before{content:"";position:absolute;left:calc(-13.5*var(--t));top:50%;
+                   width:calc(6*var(--t));height:calc(7*var(--t));
+                   transform:translateY(-50%);background:#fff}
+
+/* ---------- hero ---------- */
+.hero{position:absolute;left:0;right:0;bottom:max(7.98%, calc(59*var(--t)));
+      display:flex;flex-direction:column;align-items:center;text-align:center}
+.headline{margin:0;font-weight:700;font-size:calc(31.5*var(--t));line-height:calc(32*var(--t));
+          letter-spacing:calc(1.53*var(--t));padding-left:calc(1.53*var(--t));
+          color:#fff;text-transform:uppercase}
+.blurb{margin:calc(15.56*var(--t)) 0 0;font-weight:400;font-size:calc(11.1*var(--t));
+       line-height:calc(19.7*var(--t));color:rgba(224,232,245,.72);
+       max-width:calc(420*var(--t))}
+.cta{margin-top:calc(23*var(--t));position:relative;width:calc(190*var(--t));height:calc(41*var(--t));
+     display:flex;align-items:center;justify-content:center;text-decoration:none}
+.cta-glass{position:absolute;inset:0;background:rgba(255,255,255,.035);
+  -webkit-backdrop-filter:blur(calc(12*var(--t)));backdrop-filter:blur(calc(12*var(--t)));
+  clip-path:polygon(calc(3*var(--t)) 0, calc(100% - 10*var(--t)) 0, 100% calc(10*var(--t)),
+                    100% calc(100% - 3*var(--t)), calc(100% - 3*var(--t)) 100%,
+                    calc(10*var(--t)) 100%, 0 calc(100% - 10*var(--t)), 0 calc(3*var(--t)));
+  transition:background .3s ease}
+.cta:hover .cta-glass{background:rgba(255,255,255,.075)}
+.cta-edge{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.cta-edge path{fill:none;stroke:rgba(255,255,255,.085);stroke-width:1;transition:stroke .3s ease}
+.cta:hover .cta-edge path{stroke:rgba(255,255,255,.2)}
+.cta-in{position:relative;display:flex;align-items:center}
+.cta .ico{width:calc(7*var(--t));height:calc(11*var(--t));fill:#f2f6ff;flex:none}
+.cta .t{margin-left:calc(6*var(--t));color:#e9eef7;letter-spacing:calc(.55*var(--t))}
+
+/* ---------- dock ---------- */
+.dock{position:absolute;left:0;right:0;bottom:0;height:calc(47*var(--t));--nudge:calc(1.6*var(--t))}
+.dock .rule{position:absolute;left:0;right:0;top:0;height:var(--hair);background:var(--line)}
+.dock .div{position:absolute;top:0;bottom:0;width:var(--hair);background:rgba(255,255,255,.21)}
+.dock .div-l{left:calc(116*var(--t))}
+.dock .div-r{right:calc(139*var(--t))}
+.dock a,.dock button{display:flex;align-items:center;text-decoration:none;background:none;
+      border:0;padding:0;cursor:pointer;color:rgba(255,255,255,.82);transition:color .3s ease}
+.dock a:hover,.dock button:hover{color:#fff}
+.audio{position:absolute;left:calc(26*var(--t));top:0;bottom:0}
+.audio .ico{width:calc(14*var(--t));height:calc(11*var(--t));flex:none;fill:currentColor;stroke:currentColor}
+.audio .wave{transition:opacity .25s ease}
+.audio.muted .wave{opacity:0}
+.audio .slash{opacity:0;transition:opacity .25s ease}
+.audio.muted .slash{opacity:1}
+.audio span{margin-left:calc(10*var(--t));letter-spacing:calc(.02*var(--t))}
+.scroll{position:absolute;left:50%;transform:translateX(-50%);top:0;bottom:0}
+.scroll .ico{width:calc(5*var(--t));height:calc(7*var(--t));flex:none;fill:currentColor;position:relative;top:calc(-1*var(--t))}
+.scroll span{margin-left:calc(10*var(--t));letter-spacing:calc(-.23*var(--t))}
+.talk{position:absolute;right:calc(24*var(--t));top:0;bottom:0}
+.talk span{letter-spacing:calc(.12*var(--t))}
+.talk .ico{width:calc(16*var(--t));height:calc(15*var(--t));margin-left:calc(11*var(--t));
+           flex:none;fill:none;stroke:currentColor;stroke-width:1.6}
+
+/* ================= ENTRANCE =================
+   One sequence, once, on load. The photograph is the stage and never moves.
+   Four behaviours only:
+     DRAW    the frame and dock hairlines scale from their anchor — the
+             architecture builds itself before anything is said
+     MASK    wordmark and headline rise out of an overflow mask
+     DECODE  every micro-label resolves with the site's own effect (JS)
+     SETTLE  supporting copy, pills and controls arrive on a 7-unit lift
+
+   Timeline (ms from first paint):
+     40   frame top + left draw from the top-left corner
+     160  wordmark masked rise
+     200  frame right + bottom draw back toward it
+     300  ENTER pill, 360 MENU pill
+     340  nav group, labels decoding from 360
+     420  headline line 1 masked rise, 520 line 2
+     550  frame corners resolve
+     600  index rail, 640 active marker, labels decoding from 660
+     700  paragraph settles
+     860  CTA settles, label decodes at 900
+     920  dock rule draws, cells and labels follow to 1120
+     ~1520 last motion ends. Nothing animates afterwards. */
 :root{
-  --cover:max(calc(100vw / 1536), calc(100vh / 1024));
-  --fit:calc(100vh / 910);
-  --u:min(var(--cover), var(--fit));
-  --blur:calc(var(--u)*26);
-  --glow:calc(var(--u)*34);
-  --hairline:max(1px, calc(var(--u)*1.6));
+  --e-mask: cubic-bezier(.16,1,.3,1);    /* expo-out: long, confident tail */
+  --e-line: cubic-bezier(.65,0,.35,1);   /* a drawn stroke, not a fade */
+  --e-soft: cubic-bezier(.22,.61,.36,1); /* power2-out for small settles */
 }
-@supports (height:100dvh){
-  :root{--cover:max(calc(100vw / 1536), calc(100dvh / 1024));
-        --fit:calc(100dvh / 910);}
+@keyframes drawX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes drawY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes maskUp{from{transform:translateY(112%)}to{transform:translateY(0)}}
+@keyframes settle{from{opacity:0;transform:translateY(calc(7*var(--t)))}to{opacity:1;transform:none}}
+@keyframes markIn{from{transform:translateY(-50%) scaleX(0)}to{transform:translateY(-50%) scaleX(1)}}
+
+/* DRAW — two strokes leave the top-left corner, two answer from the bottom-right */
+.anim .ln-t{transform-origin:left center;animation:drawX .5s var(--e-line) .04s both}
+.anim .ln-l{transform-origin:center top;animation:drawY .5s var(--e-line) .04s both}
+.anim .ln-b{transform-origin:right center;animation:drawX .5s var(--e-line) .2s both}
+.anim .ln-r{transform-origin:center bottom;animation:drawY .5s var(--e-line) .2s both}
+.anim .cn{animation:fadeIn .3s linear .55s both}
+
+/* MASK — the wordmark rises inside its own box, no wrapper needed */
+.anim .logo{overflow:hidden}
+.anim .logo .wm{animation:maskUp .8s var(--e-mask) .16s both}
+
+/* SETTLE — masthead */
+.anim .enter{animation:settle .56s var(--e-soft) .3s both}
+.anim .menu{animation:settle .56s var(--e-soft) .36s both}
+.anim .links{animation:fadeIn .4s linear .34s both}
+
+/* MASK — the headline is the one moment that carries weight */
+.headline .hrow{display:block;overflow:hidden}
+.headline .hrise{display:block}
+.anim .headline .hrise{animation:maskUp .9s var(--e-mask) both}
+.anim .headline .hrow:first-child .hrise{animation-delay:.42s}
+.anim .headline .hrow+.hrow .hrise{animation-delay:.52s}
+
+/* the rail arrives as one group; its stagger is carried by the decoding labels */
+.anim .index{animation:fadeIn .45s linear .6s both}
+.anim .index .on::before{animation:markIn .42s var(--e-soft) .64s both}
+
+.anim .blurb{animation:settle .72s var(--e-soft) .7s both}
+.anim .cta{animation:settle .62s var(--e-soft) .86s both}
+
+/* DRAW + SETTLE — the dock closes the composition */
+.anim .dock .rule{transform-origin:left center;animation:drawX .52s var(--e-line) .92s both}
+.anim .dock .div{transform-origin:center top;animation:drawY .36s var(--e-line) 1.06s both}
+.anim .audio{animation:settle .52s var(--e-soft) .96s both}
+@keyframes settleC{from{opacity:0;transform:translate(-50%,calc(7*var(--t)))}
+                   to{opacity:1;transform:translateX(-50%)}}
+.anim .scroll{animation:settleC .52s var(--e-soft) 1.02s both}
+.anim .talk{animation:settle .52s var(--e-soft) 1.08s both}
+
+/* ---------- a11y ---------- */
+a:focus-visible,button:focus-visible{outline:calc(1.5*var(--t)) solid #e8d1cb;outline-offset:calc(3*var(--t))}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- tablet ----------
+   The desktop architecture is one uniform scale of the 1280x800 canvas:
+   u = min(100vw/1280, 100dvh/800). It holds while that scale is generous —
+   at 1366x1024 (12.9" landscape) it is 1.07, at 1180x820 it is 0.92. It
+   fails at u < 0.9, where the 10px labels drop under 9px and the body copy
+   under 10px; that is 1152px wide. Below that the type unit is pinned and
+   the boxes carrying type size to their content, so the composition stops
+   being a shrinking miniature and becomes a layout at its own scale, while
+   the frame keeps scaling with the viewport. At the boundary both units are
+   0.9 and every content-sized box resolves to its desktop width, so the
+   architectures meet without a visible step. */
+@media (max-width: 1152px){
+  :root{
+    --u: clamp(.8px, min(100vw / 1280, 100vh / 800), 1.1px);
+    --u: clamp(.8px, min(100vw / 1280, 100dvh / 800), 1.1px);
+    /* type grows fluidly as the viewport narrows: 0.9 at the breakpoint,
+       matching the desktop scale exactly, up to 1.12 where the phone block
+       takes over at the same value — both boundaries are stepless */
+    --t: max(var(--u), clamp(.9px, calc(.9px + (1152px - 100vw) * .00042), 1.12px));
+  }
+  /* pills and the CTA size to their label instead of to a fixed canvas width;
+     the paddings are the reference's own internal measurements, so at the
+     breakpoint these resolve to 87/90/190 units exactly as before */
+  .enter{width:auto;padding:0 calc(19*var(--t)) 0 calc(21*var(--t))}
+  .menu{width:auto;padding:0 calc(24*var(--t)) 0 calc(21*var(--t))}
+  .cta{width:auto;padding:0 calc(19*var(--t))}
+  /* the dock's cells become content-aware; the dividers become their edges,
+     landing on the same 116/139 offsets at the breakpoint */
+  .dock{display:flex;justify-content:space-between;align-items:stretch}
+  .dock .div{display:none}
+  .audio,.talk{position:static;height:auto}
+  .audio{padding:0 min(calc(20*var(--t)),5vw) 0 min(calc(26*var(--t)),6vw);
+         border-right:var(--hair) solid rgba(255,255,255,.21)}
+  .talk{padding:0 min(calc(24*var(--t)),6vw) 0 min(calc(20*var(--t)),5vw);
+        border-left:var(--hair) solid rgba(255,255,255,.21)}
+  /* touch targets grow inside the existing boxes — nothing moves */
+  .links{gap:calc(17*var(--t));align-self:stretch}
+  .links a{display:flex;align-items:center;align-self:stretch}
+  .index a{padding:calc(7*var(--t)) 0}
 }
 
-/* ========================= BASE ========================= */
-html,body{height:100%;background:#02060f;overflow:hidden}
-body{font-family:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);
-     -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-     text-rendering:geometricPrecision}
-a{color:inherit;text-decoration:none}  li{list-style:none}
-a:focus-visible{outline:2px solid #9fe0ff;outline-offset:3px;border-radius:4px}
-*{margin:0;padding:0;box-sizing:border-box}
-
-/* ===================== BACKGROUND LAYERS ===================== */
-.art{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;
-     object-position:50% 50%;z-index:0;user-select:none;
-     -webkit-user-drag:none;pointer-events:none;background:#03060c}
-.veil{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(140% 60% at 50% 40%,
-        rgba(var(--veil),.16) 0%, rgba(var(--veil),.057) 50%,
-        rgba(var(--veil),0) 100%),
-    linear-gradient(180deg, rgba(var(--veil),0) 45%,
-        rgba(var(--veil),.10) 100%);}
-.bar,.hero,.foot{position:fixed;z-index:1}
-
-/* ===================== COMPONENT SKIN ===================== */
-.brand svg{fill:var(--ink);display:block}
-.caret,.navarrow{fill:none;stroke:var(--nav);stroke-linecap:round;stroke-linejoin:round}
-.navarrow{stroke-linecap:square;stroke-linejoin:miter}
-.pill{border:var(--hairline) solid var(--hair);border-radius:999px}
-.chev{fill:none;stroke:var(--chev);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.cta .arrow{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:square;stroke-linejoin:miter}
-.rule{background:linear-gradient(180deg,
-      rgba(186,200,214,.70) 0%,rgba(206,220,232,.92) 52%,
-      rgba(182,198,212,.68) 100%)}
-
-.cta{
-  border-radius:999px;
-  background:
-    linear-gradient(180deg, rgba(6,12,22,0) 45%, rgba(6,12,22,.12) 78%,
-                            rgba(6,12,22,.28) 100%),
-    linear-gradient(90deg,
-      rgba(255,226,178,.17) 0%,  rgba(255,236,208,.07) 22%,
-      rgba(176,206,238,.03) 55%, rgba(150,196,244,.09) 100%),
-    linear-gradient(90deg,
-      rgba(255,255,255,.24) 0%,  rgba(255,255,255,.17) 12%,
-      rgba(255,255,255,.11) 26%, rgba(255,255,255,.07) 42%,
-      rgba(255,255,255,.05) 60%, rgba(255,255,255,.04) 80%,
-      rgba(255,255,255,.04) 100%);
-  -webkit-backdrop-filter:blur(var(--blur)) saturate(.45);
-  backdrop-filter:blur(var(--blur)) saturate(.45);
-  box-shadow:0 calc(var(--u)*-2) calc(var(--u)*20) rgba(255,224,176,.20),
-             0 0 var(--glow) rgba(168,204,252,.16),
-             inset 0 var(--hairline) 0 0 rgba(255,251,242,.45);
+/* The hero image is 16:10. Once the viewport is narrower than ~6/5 the frame
+   crops the mountains away and the index rail loses the dark ground it reads
+   against, so the rail moves up into the sky band and the hero takes the full
+   width below it. Above that ratio the rail keeps its centred desktop
+   position and the hero reserves its column. */
+@media (max-width: 1152px) and (min-aspect-ratio: 6/5){
+  .hero{padding-inline:calc(150*var(--t))}
 }
-.cta::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;
-  padding:var(--hairline);pointer-events:none;
-  background:
-    linear-gradient(180deg, rgba(255,252,246,.95) 0%,
-        rgba(255,252,246,.20) 45%, rgba(255,252,246,0) 78%),
-    linear-gradient(90deg,
-      rgba(255,228,182,.95) 0%,  rgba(250,236,210,.70) 12%,
-      rgba(226,230,234,.03) 32%, rgba(214,226,240,.02) 62%,
-      rgba(200,228,250,.70) 90%, rgba(186,224,247,.95) 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  mask-composite:exclude;
+@media (max-width: 1152px) and (max-aspect-ratio: 6/5){
+  .index{top:32%}
+  .hero{padding-inline:calc(22*var(--t))}
 }
 
-/* ---- per-element variable weights ---- */
-#word{font-variation-settings:'wght' 531;color:var(--ink)}
-#about,#product,#solutions,#login{font-variation-settings:'wght' 506;color:var(--nav)}
-#contact{font-variation-settings:'wght' 581;color:var(--navdim)}
-#h1a,#h1b{font-variation-settings:'wght' 424;color:var(--ink)}
-#sub1,#sub2{font-variation-settings:'wght' 446;color:var(--sub)}
-#cta{font-variation-settings:'wght' 497;color:var(--ink)}
-#f1,#f2,#f3,#f4{font-variation-settings:'wght' 534;color:var(--feat)}
-#foot1,#foot2{font-variation-settings:'wght' 521;color:var(--foot)}
+/* ---------- navigation collapse ----------
+   The bar holds logo + links + both pills while the gap between the wordmark
+   and the first link stays above an eighth of the frame width. With the type
+   growing as the viewport narrows that gap closes at ~830px, so from there
+   the same nav set becomes a panel hung off the MENU pill — the site's own
+   dots icon is the burger. No markup is duplicated: .navset is
+   display:contents in the bar and a flex panel here. */
+@media (max-width: 830px){
+  .navset{
+    display:flex;flex-direction:column;align-items:stretch;
+    position:absolute;top:calc(52*var(--t));right:0;min-width:calc(196*var(--t));
+    padding:calc(16*var(--t)) calc(20*var(--t)) calc(18*var(--t));
+    gap:calc(4*var(--t));
+    background:rgba(11,16,26,.74);
+    -webkit-backdrop-filter:blur(calc(16*var(--t)));backdrop-filter:blur(calc(16*var(--t)));
+    clip-path:polygon(0 0, calc(100% - 15*var(--t)) 0, 100% calc(15*var(--t)), 100% 100%,
+                      calc(15*var(--t)) 100%, 0 calc(100% - 15*var(--t)));
+    opacity:0;visibility:hidden;transform:translateY(calc(-6*var(--t)));
+    transition:opacity .34s ease, transform .34s cubic-bezier(.22,.61,.36,1), visibility .34s;
+    z-index:6;
+  }
+  .nav-open .navset{opacity:1;visibility:visible;transform:none}
+  .links{flex-direction:column;align-items:stretch;gap:0;margin-right:0;align-self:auto}
+  .links a{padding:calc(9*var(--t)) 0;justify-content:flex-start}
+  .navset .enter{width:auto;align-self:stretch;justify-content:flex-start;
+    margin-top:calc(10*var(--t));height:calc(38*var(--t));
+    padding:0 calc(16*var(--t));background:rgba(255,250,246,.07)}
+}
 
-/* ===================== CONTENT OVERLAYS (top-right click-to-view) ===================== */
-.ov{position:fixed;inset:0;z-index:50;display:none;place-items:center;padding:24px;
-    background:rgba(2,6,14,.70);
-    -webkit-backdrop-filter:blur(16px) saturate(.6);backdrop-filter:blur(16px) saturate(.6)}
+
+/* ---------- mobile ----------
+   The tablet architecture holds further than a conventional phone breakpoint
+   would suggest. Measured down the range: the masthead still has 189px
+   between wordmark and menu at 560, the headline keeps its two hand-set
+   lines to 487, the dock keeps 200px of slack to 400. What fails first is
+   the paragraph — its four hand-set lines need 452px of measure, so at
+   549px the block breaks into five ragged lines with an orphan. That is the
+   real breaking point, so mobile begins at 548.
+
+   The architecture here: the hand-set breaks are released so the copy finds
+   its own measure, the wordmark becomes fluid so it never crowds the menu,
+   the frame margins tighten proportionally, the rail climbs clear of the
+   subject as the frame crops to it, and the type scale simply carries over
+   from the tablet boundary rather than shrinking — a phone is held closer,
+   not read at arm's length. */
+@media (max-width: 548px){
+  :root{
+    --u: clamp(.62px, min(100vw / 500, 100vh / 820), 1.1px);
+    --u: clamp(.62px, min(100vw / 500, 100dvh / 820), 1.1px);
+    /* 1.12 at the breakpoint, matching tablet exactly, easing to a 1.06 floor */
+    --t: clamp(1.06px, calc(100vw / 489), 1.12px);
+  }
+  .frame{left:calc(22*var(--u));right:calc(22*var(--u));
+         top:calc(22*var(--u));bottom:calc(22*var(--u))}
+  /* the wordmark keeps its artwork and proportion, and yields width only
+     when the bar actually needs it */
+  .logo{left:calc(16*var(--t));top:calc(22*var(--t));height:calc(19*var(--t))}
+  .masthead{right:calc(9*var(--t));top:calc(12*var(--t))}
+  /* the frame now crops to the subject itself, so the rail stops floating
+     beside the composition and docks under the wordmark, in the sky band —
+     the one region that stays dark at every phone crop. Its rhythm tightens
+     just enough to clear the stone, and the inactive items carry slightly
+     more weight to hold up against a brighter backdrop. */
+  .index{top:calc(70*var(--t));transform:none}
+  .index li{height:calc(24*var(--t))}
+  .index a{color:rgba(232,238,250,.42)}
+  .hero{bottom:max(9%, calc(59*var(--t)));padding-inline:calc(18*var(--t))}
+  .headline{text-wrap:balance}
+  .blurb{max-width:calc(400*var(--t))}
+  .blurb br{display:none}
+  /* the headline wraps freely here, so it lifts as one block instead of per line */
+  .headline .hrow{display:inline;overflow:visible}
+  .headline .hrise{display:inline}
+  .anim .headline .hrise{animation:none}
+  .anim .headline{animation:settle .8s var(--e-mask) .42s both}
+  .hero .headline{transition:opacity .4s ease}
+  .swapping .headline{opacity:0}
+}
+/* ---------- narrow mobile ----------
+   Measured: the dock's three cells hold one row down to 365px, where the
+   centre cue meets the contact control. Below that the cue takes a row of
+   its own — the two controls split the row above it, keeping the same
+   hairline language — rather than the labels being shrunk or dropped. */
+@media (max-width: 370px){
+  .dock{height:auto;flex-wrap:wrap}
+  .audio,.talk{flex:1 1 0;justify-content:center;height:calc(44*var(--t))}
+  .scroll{position:static;transform:none;order:1;flex:1 0 100%;
+          justify-content:center;height:calc(40*var(--t));
+          border-top:var(--hair) solid rgba(255,255,255,.13)}
+  .anim .scroll{animation-name:settle}
+  .hero{bottom:calc(96*var(--t))}
+}
+
+/* last resort only: on a screen too short to hold the whole composition the
+   supporting paragraph steps aside rather than the layout clipping */
+@media (max-height: 560px),
+       (max-width: 370px) and (max-height: 640px){ .blurb{display:none} }
+
+/* ---------- menu content overlay (상단 메뉴 → 콘텐츠) ---------- */
+.ov{position:fixed;inset:0;z-index:40;display:none;place-items:center;padding:calc(30*var(--u));
+    background:rgba(4,7,13,.74);
+    -webkit-backdrop-filter:blur(calc(10*var(--t)));backdrop-filter:blur(calc(10*var(--t)))}
 .ov.open{display:grid}
-.ov-card{position:relative;width:min(560px,92vw);max-height:82vh;overflow:auto;
-  border-radius:22px;padding:38px 34px 34px;color:var(--ink);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.045) 100%),
-    linear-gradient(90deg, rgba(255,226,178,.06) 0%, rgba(150,196,244,.06) 100%),
-    linear-gradient(180deg, rgba(6,12,22,.72) 0%, rgba(6,12,22,.82) 100%);
-  -webkit-backdrop-filter:blur(26px) saturate(.55);backdrop-filter:blur(26px) saturate(.55);
-  border:1px solid rgba(196,214,232,.28);
-  box-shadow:0 30px 90px rgba(2,6,14,.6), inset 0 1px 0 rgba(255,251,242,.42);
-  transform:translateY(10px) scale(.99);opacity:0;transition:opacity .28s ease,transform .28s cubic-bezier(.16,1,.3,1)}
-.ov.open .ov-card{transform:none;opacity:1}
-.ov-x{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:999px;
-  display:grid;place-items:center;cursor:pointer;background:rgba(255,255,255,.06);
-  border:1px solid var(--hair)}
-.ov-x:hover{background:rgba(255,255,255,.12)}
-.ov-x svg{width:14px;height:14px;fill:none;stroke:var(--nav);stroke-width:1.7;stroke-linecap:round}
-.ov-kicker{font-variation-settings:'wght' 560;font-size:11.5px;letter-spacing:.22em;
-  text-transform:uppercase;color:#9ec3ef;margin-bottom:10px}
-.ov-title{font-variation-settings:'wght' 560;font-size:27px;letter-spacing:-.01em;
-  line-height:1.15;margin-bottom:16px;color:var(--ink)}
-.ov-body{font-variation-settings:'wght' 400;font-size:15.5px;line-height:1.72;color:var(--sub)}
-.ov-body p{margin:0 0 13px}
-.ov-body h3{color:var(--ink);font-variation-settings:'wght' 540;font-size:14px;
-  letter-spacing:.01em;margin:20px 0 8px}
-.ov-body ul{margin:0 0 13px;padding-left:20px}
-.ov-body li{list-style:disc;margin:5px 0}
-.ov-body strong{color:var(--ink);font-variation-settings:'wght' 540}
-.ov-cta{display:inline-flex;align-items:center;gap:8px;margin-top:6px;
-  padding:11px 20px;border-radius:999px;color:var(--ink);
-  font-variation-settings:'wght' 520;font-size:14.5px;
-  border:1px solid var(--hair);background:rgba(255,255,255,.05)}
-.ov-cta:hover{background:rgba(255,255,255,.11)}
+.ov-card{position:relative;width:min(calc(560*var(--t)),92vw);max-height:84vh;overflow:auto;
+    background:rgba(11,16,26,.84);border:var(--hair) solid var(--line);
+    -webkit-backdrop-filter:blur(calc(16*var(--t)));backdrop-filter:blur(calc(16*var(--t)));
+    clip-path:polygon(0 0, calc(100% - 20*var(--t)) 0, 100% calc(20*var(--t)), 100% 100%,
+                      calc(20*var(--t)) 100%, 0 calc(100% - 20*var(--t)));
+    padding:calc(40*var(--t)) calc(40*var(--t)) calc(34*var(--t));color:#e7ecf5}
+.ov-x{position:absolute;top:calc(15*var(--t));right:calc(18*var(--t));background:none;border:0;
+    cursor:pointer;color:#9fb0c4;font-size:calc(15*var(--t));line-height:1;transition:color .25s ease}
+.ov-x:hover{color:#fff}
+.ov-k{font-family:'Chakra S','Inter S',sans-serif;font-weight:700;font-size:calc(10*var(--t));
+    letter-spacing:calc(2*var(--t));color:var(--cream);text-transform:uppercase;margin-bottom:calc(11*var(--t))}
+.ov-h{font-weight:700;font-size:calc(22*var(--t));line-height:1.28;letter-spacing:calc(.3*var(--t));
+    color:#fff;margin:0 0 calc(16*var(--t))}
+.ov-b{font-weight:400;font-size:calc(12.5*var(--t));line-height:calc(21*var(--t));color:rgba(224,232,245,.76)}
+.ov-b p{margin:0 0 calc(12*var(--t))}
+.ov-b ul{margin:0 0 calc(12*var(--t));padding-left:calc(17*var(--t))}
+.ov-b li{margin:calc(5*var(--t)) 0;list-style:disc}
+.ov-b strong{color:#fff;font-weight:700}
 
-/* ===================== ENTRANCE SEQUENCE ===================== */
-@media (prefers-reduced-motion:no-preference){
-  :root{--ent-line:cubic-bezier(.16,1,.3,1);--ent-soft:cubic-bezier(.25,.8,.35,1);--rise:9px}
-
-  @keyframes en-wipe{
-    from{clip-path:inset(-.78em 0 calc(100% + .78em) 0);translate:0 var(--rise)}
-    to  {clip-path:inset(-.78em 0 -.78em 0);translate:0 0}}
-  @keyframes en-lift{from{opacity:0;translate:0 var(--rise)}}
-  @keyframes en-settle{from{opacity:0;translate:0 calc(var(--rise)*.7);scale:.99}}
-  @keyframes en-draw{from{scale:1 0}}
-
-  html:not(.is-entered) .brand{animation:en-lift .60s var(--ent-soft) .12s backwards}
-  html:not(.is-entered) #about{animation:en-lift .55s var(--ent-soft) .20s backwards}
-  html:not(.is-entered) #product{animation:en-lift .55s var(--ent-soft) .25s backwards}
-  html:not(.is-entered) #solutions,
-  html:not(.is-entered) .caret{animation:en-lift .55s var(--ent-soft) .30s backwards}
-  html:not(.is-entered) #login,
-  html:not(.is-entered) .navarrow{animation:en-lift .55s var(--ent-soft) .35s backwards}
-  html:not(.is-entered) .pill{animation:en-settle .60s var(--ent-soft) .40s backwards}
-  html:not(.is-entered) .burger{animation:en-lift .60s var(--ent-soft) .40s backwards}
-  html:not(.is-entered) #h1a{animation:en-wipe .95s var(--ent-line) .34s backwards}
-  html:not(.is-entered) #h1b{animation:en-wipe .95s var(--ent-line) .44s backwards}
-  html:not(.is-entered) #sub1{animation:en-lift .70s var(--ent-soft) .74s backwards}
-  html:not(.is-entered) #sub2{animation:en-lift .70s var(--ent-soft) .80s backwards}
-  html:not(.is-entered) .cta{animation:en-lift .80s var(--ent-line) .94s backwards}
-  html:not(.is-entered) .feats li:nth-child(1){animation:en-lift .60s var(--ent-soft) 1.08s backwards}
-  html:not(.is-entered) .feats li:nth-child(2){animation:en-lift .60s var(--ent-soft) 1.15s backwards}
-  html:not(.is-entered) .feats li:nth-child(3){animation:en-lift .60s var(--ent-soft) 1.22s backwards}
-  html:not(.is-entered) .feats li:nth-child(4){animation:en-lift .60s var(--ent-soft) 1.29s backwards}
-  html:not(.is-entered) .rule{animation:en-draw .55s var(--ent-line) 1.34s backwards;transform-origin:top}
-  html:not(.is-entered) #foot1{animation:en-lift .60s var(--ent-soft) 1.42s backwards}
-  html:not(.is-entered) #foot2{animation:en-lift .60s var(--ent-soft) 1.48s backwards}
-}
-
-/* ===================== ARCHITECTURE A — LOCKED (desktop) ===================== */
-@media (min-width:1200px) and (min-height:560px) and (min-aspect-ratio:100/95){
-  .bar,.hero,.foot{left:50%;width:calc(var(--u)*1536);transform:translateX(-50%)}
-  .bar{top:0;height:calc(var(--u)*120);z-index:3}
-  .foot{bottom:0;height:calc(var(--u)*140)}
-  .hero{top:50%;height:calc(var(--u)*1024);transform:translate(-50%,-50%)}
-  .navtoggle,.burger,.scrim{display:none}
-  .navpanel{display:contents}
-  .bar > *,.foot > *,.hero > *,.pill,.caret,.navarrow{position:absolute}
-  .menu,.menu a,.login{position:static}
-  .title,.sub,.feats{inset:0;font-weight:inherit;pointer-events:none}
-  .cta{pointer-events:auto}
-  .bar span,.foot span,.title span,.sub span,.feats span,.cta span{
-    position:absolute;line-height:0;white-space:nowrap}
-
-  .brand{left:calc(var(--u)*221);top:calc(var(--u)*55);
-         display:flex;align-items:center;gap:calc(var(--u)*7)}
-  .brand svg{width:calc(var(--u)*23);height:calc(var(--u)*17)}
-  #word{position:relative;font-size:calc(var(--u)*23.4);letter-spacing:calc(var(--u)*4.8);
-        transform:translate(0,0)}
-
-  .caret{left:calc(var(--u)*744);top:calc(var(--u)*62.4);
-         width:calc(var(--u)*9);height:calc(var(--u)*6);stroke-width:1.25}
-  .navarrow{left:calc(var(--u)*1163);top:calc(var(--u)*61.6);
-            width:calc(var(--u)*10);height:calc(var(--u)*9);stroke-width:1.2}
-  .pill{left:calc(var(--u)*1191.5);top:calc(var(--u)*43.5);
-        width:calc(var(--u)*144);height:calc(var(--u)*44)}
-  .cta{left:calc(var(--u)*625.8);top:calc(var(--u)*555.2);
-       width:calc(var(--u)*279.6);height:calc(var(--u)*46.6)}
-  .cta .arrow{position:absolute;left:calc(var(--u)*230.8);top:calc(var(--u)*17.8);
-              width:calc(var(--u)*16);height:calc(var(--u)*11)}
-  .feats li{position:absolute;width:calc(var(--u)*220);height:calc(var(--u)*20);
-            pointer-events:auto;cursor:pointer}
-  .feats .chev{position:absolute;left:0;top:0;width:calc(var(--u)*11);height:calc(var(--u)*20)}
-  .feats li:nth-child(1){left:calc(var(--u)*360);top:calc(var(--u)*718)}
-  .feats li:nth-child(2){left:calc(var(--u)*590);top:calc(var(--u)*719)}
-  .feats li:nth-child(3){left:calc(var(--u)*803);top:calc(var(--u)*721)}
-  .feats li:nth-child(4){left:calc(var(--u)*1013);top:calc(var(--u)*722)}
-  .rule{left:calc(var(--u)*767);top:calc(var(--u)*792);width:1px;height:calc(var(--u)*57)}
-
-  /* --- type coordinates --- */
-  #word{}
-  #about{left:calc(var(--u)*477);top:calc(var(--u)*65.66);
-         font-size:calc(var(--u)*13.5);letter-spacing:calc(var(--u)*-0.5)}
-  #product{left:calc(var(--u)*568.5);top:calc(var(--u)*65.66);
-           font-size:calc(var(--u)*13.5);letter-spacing:calc(var(--u)*-0.167)}
-  #solutions{left:calc(var(--u)*675);top:calc(var(--u)*65.66);
-             font-size:calc(var(--u)*13.5);letter-spacing:calc(var(--u)*-0.5)}
-  #login{left:calc(var(--u)*1002.5);top:calc(var(--u)*66.16);
-         font-size:calc(var(--u)*13.5);letter-spacing:calc(var(--u)*-0.227)}
-  #contact{left:0;right:0;text-align:center;top:calc(var(--u)*21.66);
-           font-size:calc(var(--u)*13.5);letter-spacing:calc(var(--u)*0.25);
-           transform:translateX(calc(var(--u)*-0.5))}
-
-  #h1a{left:0;right:0;text-align:center;top:calc(var(--u)*285.222);
-       font-size:calc(var(--u)*46.8);letter-spacing:calc(var(--u)*0.532);
-       transform:translateX(calc(var(--u)*-1))}
-  #h1b{left:0;right:0;text-align:center;top:calc(var(--u)*335.222);
-       font-size:calc(var(--u)*46.8);letter-spacing:calc(var(--u)*-0.398);
-       transform:translateX(calc(var(--u)*-3))}
-  #sub1{left:0;right:0;text-align:center;top:calc(var(--u)*408.115);
-        font-size:calc(var(--u)*20.6);letter-spacing:calc(var(--u)*0.367);
-        transform:translateX(calc(var(--u)*-0.5))}
-  #sub2{left:0;right:0;text-align:center;top:calc(var(--u)*432.153);
-        font-size:calc(var(--u)*19.1);letter-spacing:calc(var(--u)*-0.632);
-        transform:translateX(calc(var(--u)*-2))}
-  #cta{left:0;right:0;text-align:center;top:calc(var(--u)*23.113);
-       font-size:calc(var(--u)*22);letter-spacing:calc(var(--u)*-0.312);
-       transform:translateX(calc(var(--u)*-14.5))}
-  #f1{left:calc(var(--u)*26);top:calc(var(--u)*11.266);
-      font-size:calc(var(--u)*14.6);letter-spacing:calc(var(--u)*-0.75)}
-  #f2{left:calc(var(--u)*26);top:calc(var(--u)*11.266);
-      font-size:calc(var(--u)*14.6);letter-spacing:calc(var(--u)*-0.889)}
-  #f3{left:calc(var(--u)*26);top:calc(var(--u)*11.266);
-      font-size:calc(var(--u)*14.6);letter-spacing:calc(var(--u)*-1.067)}
-  #f4{left:calc(var(--u)*29);top:calc(var(--u)*11.266);
-      font-size:calc(var(--u)*14.6);letter-spacing:calc(var(--u)*-1.067)}
-  #foot1{left:0;right:0;text-align:center;bottom:calc(var(--u)*101.344);
-         font-size:calc(var(--u)*16.3);letter-spacing:calc(var(--u)*-0.256);
-         transform:translateX(calc(var(--u)*-0.5))}
-  #foot2{left:0;right:0;text-align:center;bottom:calc(var(--u)*76.344);
-         font-size:calc(var(--u)*16.3);letter-spacing:calc(var(--u)*-0.667);
-         transform:translateX(calc(var(--u)*-2))}
-
-  /* click hotspots for the decorative absolute nav labels (no visual shift) */
-  #about,#product,#solutions,#login{cursor:pointer}
-  #about::before,#product::before,#solutions::before,#login::before{
-    content:'';position:absolute;inset:calc(var(--u)*-13) calc(var(--u)*-11)}
-}
-
-/* ===================== ARCHITECTURE B — FLOW ===================== */
-@media (max-width:1199px),(max-height:559px),(max-aspect-ratio:100/95){
-  :root{--c:min(calc(100vw / 430), calc(100vh / 860))}
-  body{display:flex;flex-direction:column;height:100vh;
-       padding:calc(env(safe-area-inset-top) + calc(var(--c)*24)) calc(var(--c)*22)
-               calc(env(safe-area-inset-bottom) + calc(var(--c)*22))}
-  .bar,.hero,.foot{position:static;width:100%}
-  .bar{order:1;position:relative;z-index:5;display:flex;align-items:center;
-       justify-content:space-between;gap:calc(var(--c)*16)}
-  .brand{display:flex;align-items:center;gap:calc(var(--c)*8)}
-  .brand svg{width:calc(var(--c)*22);height:auto}
-  #word{font-size:calc(var(--c)*19);letter-spacing:.06em}
-
-  .navtoggle{position:absolute;top:0;right:0;width:1px;height:1px;opacity:0;
-             margin:0;pointer-events:none}
-  .burger{display:inline-flex;align-items:center;justify-content:center;
-    width:calc(var(--c)*42);height:calc(var(--c)*30);border-radius:999px;
-    cursor:pointer;border:var(--hairline) solid var(--hair);
-    background:rgba(255,255,255,.03);
-    -webkit-backdrop-filter:blur(var(--blur)) saturate(.45);
-    backdrop-filter:blur(var(--blur)) saturate(.45)}
-  .burger svg{width:calc(var(--c)*19);height:auto;fill:none;stroke:var(--nav);
-              stroke-width:1.4;stroke-linecap:round}
-  .burger svg path{transform-box:fill-box;transform-origin:center;
-                   transition:transform .24s ease,opacity .18s ease}
-  .navtoggle:focus-visible ~ .burger{outline:2px solid #9fe0ff;outline-offset:3px}
-  .navtoggle:checked ~ .burger .b1{transform:translateY(6px) rotate(45deg)}
-  .navtoggle:checked ~ .burger .b2{opacity:0}
-  .navtoggle:checked ~ .burger .b3{transform:translateY(-6px) rotate(-45deg)}
-  .scrim{display:none;position:fixed;inset:0;z-index:-1}
-  .navtoggle:checked ~ .scrim{display:block}
-
-  .navpanel{position:absolute;top:calc(100% + calc(var(--c)*12));right:0;
-    display:flex;flex-direction:column;gap:calc(var(--c)*2);
-    width:min(calc(var(--c)*268), 78vw);padding:calc(var(--c)*12);
-    border-radius:calc(var(--c)*20);
-    background:
-      linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.045) 100%),
-      linear-gradient(90deg, rgba(255,226,178,.06) 0%, rgba(150,196,244,.06) 100%),
-      linear-gradient(180deg, rgba(6,12,22,.60) 0%, rgba(6,12,22,.70) 100%);
-    -webkit-backdrop-filter:blur(var(--blur)) saturate(.45);
-    backdrop-filter:blur(var(--blur)) saturate(.45);
-    box-shadow:0 calc(var(--c)*14) calc(var(--c)*38) rgba(2,6,14,.45);
-    opacity:0;transform:translateY(calc(var(--c)*-8)) scale(.985);
-    transform-origin:100% 0;pointer-events:none;
-    transition:opacity .2s ease,transform .2s ease}
-  .navtoggle:checked ~ .navpanel{opacity:1;transform:none;pointer-events:auto}
-  .navpanel .menu{display:flex;flex-direction:column}
-  .navpanel .menu a,.navpanel .login{display:flex;align-items:center;
-    gap:calc(var(--c)*8);padding:calc(var(--c)*10) calc(var(--c)*12);
-    border-radius:calc(var(--c)*12);font-size:calc(var(--c)*16);
-    color:var(--nav);transition:background .15s ease}
-  .navpanel .menu a:hover,.navpanel .login:hover{background:rgba(255,255,255,.07)}
-  .navpanel .caret,.navpanel .navarrow{margin-left:auto;height:auto}
-  .navpanel .caret{width:calc(var(--c)*10)}
-  .navpanel .navarrow{width:calc(var(--c)*11)}
-  .navpanel .pill{margin-top:calc(var(--c)*8);text-align:center;
-    white-space:nowrap;padding:calc(var(--c)*11) calc(var(--c)*16);
-    font-size:calc(var(--c)*15)}
-
-  .hero{order:2;flex:1;display:flex;flex-direction:column;align-items:center;
-        justify-content:center;text-align:center;gap:calc(var(--c)*20)}
-  .title{font-size:calc(var(--c)*33);line-height:1.12;max-width:15ch}
-  .sub{color:var(--sub);font-size:calc(var(--c)*17);line-height:1.32;max-width:26ch}
-  .cta{position:relative;display:inline-flex;align-items:center;
-       gap:calc(var(--c)*12);padding:calc(var(--c)*16) calc(var(--c)*26);
-       font-size:calc(var(--c)*18)}
-  .cta .arrow{width:calc(var(--c)*16);height:calc(var(--c)*11)}
-  .feats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:calc(var(--c)*15) calc(var(--c)*13);width:100%;
-    max-width:calc(var(--c)*400);margin-top:calc(var(--c)*6)}
-  .feats li{display:flex;align-items:center;gap:calc(var(--c)*9);
-            font-size:calc(var(--c)*14)}
-  .feats .chev{width:calc(var(--c)*9);height:calc(var(--c)*16);flex:none}
-  .rule{width:1px;height:calc(var(--c)*33);margin:calc(var(--c)*19) auto 0}
-  .foot{order:3;text-align:center;color:var(--foot);
-        font-size:calc(var(--c)*13);line-height:1.55}
-  .foot span{display:block}
-
-  /* ---- B1. PHONE ---- */
-  @media (max-width:599px),(max-height:429px){
-    :root{--c:min(calc(100vw / 360), calc(100vh / 770), 1px);--rise:6px}
-    body{padding:calc(env(safe-area-inset-top) + calc(var(--c)*28)) calc(var(--c)*26)
-                 calc(env(safe-area-inset-bottom) + calc(var(--c)*26))}
-    .brand svg{width:calc(var(--c)*24)}   #word{font-size:calc(var(--c)*19)}
-    .burger{width:calc(var(--c)*46);height:calc(var(--c)*33);position:relative}
-    .burger::after{content:'';position:absolute;left:50%;top:50%;
-      transform:translate(-50%,-50%);width:max(44px,100%);height:max(44px,100%)}
-    .burger svg{width:calc(var(--c)*21)}
-    .navpanel{width:min(calc(var(--c)*300), 82vw);padding:calc(var(--c)*15);
-              border-radius:calc(var(--c)*22)}
-    .navpanel .menu a,.navpanel .login{font-size:calc(var(--c)*16);
-      padding:calc(var(--c)*13) calc(var(--c)*14);border-radius:calc(var(--c)*13);
-      min-height:max(44px,calc(var(--c)*44))}
-    .navpanel .pill{font-size:calc(var(--c)*16);
-      padding:calc(var(--c)*13) calc(var(--c)*18);margin-top:calc(var(--c)*9)}
-
-    .veil{background:
-      radial-gradient(130% 44% at 50% 45%,
-          rgba(var(--veil),.50) 0%, rgba(var(--veil),.26) 55%,
-          rgba(var(--veil),0) 100%),
-      linear-gradient(180deg,
-          rgba(var(--veil),.34) 0%, rgba(var(--veil),0) 20%,
-          rgba(var(--veil),0) 60%, rgba(var(--veil),.36) 100%)}
-
-    .hero{gap:calc(var(--c)*22)}
-    .title{font-size:calc(var(--c)*32);line-height:1.2;letter-spacing:-.002em;
-           max-width:none;text-wrap:balance}
-    .title span{display:block}
-    .sub{font-size:calc(var(--c)*16);line-height:1.45;max-width:none;text-wrap:balance}
-    .sub span{display:block}
-    .cta{font-size:calc(var(--c)*16.5);padding:calc(var(--c)*15) calc(var(--c)*28);
-         gap:calc(var(--c)*12)}
-    .cta .arrow{width:calc(var(--c)*17);height:calc(var(--c)*12)}
-    .feats{grid-template-columns:repeat(2,max-content);justify-content:center;
-      width:auto;max-width:none;gap:calc(var(--c)*16) calc(var(--c)*16);
-      margin-top:calc(var(--c)*22)}
-    .feats li{font-size:calc(var(--c)*13);gap:calc(var(--c)*10)}
-    .feats .chev{width:calc(var(--c)*10);height:calc(var(--c)*18)}
-    .rule{height:calc(var(--c)*30);margin:calc(var(--c)*28) auto 0}
-    .foot{font-size:calc(var(--c)*13.5);line-height:1.65;text-wrap:balance}
-  }
-
-  /* ---- LANDSCAPE PHONES ---- */
-  @media (max-height:429px) and (min-aspect-ratio:1/1){
-    :root{--c:min(calc(100vw / 760), calc(100vh / 430))}
-    .hero{gap:calc(var(--c)*12)}
-    .title{font-size:calc(var(--c)*31);line-height:1.2;max-width:26ch}
-    .sub{font-size:calc(var(--c)*16);max-width:44ch}   .sub span{display:inline}
-    .cta{font-size:calc(var(--c)*15.5);padding:calc(var(--c)*12) calc(var(--c)*24)}
-    .feats{grid-template-columns:repeat(4,max-content);justify-content:center;
-      max-width:none;gap:calc(var(--c)*24);margin-top:calc(var(--c)*2)}
-    .feats li{font-size:calc(var(--c)*13.5)}
-    .rule{height:calc(var(--c)*20);margin:calc(var(--c)*10) auto 0}
-    .foot{font-size:calc(var(--c)*13)}
-  }
-
-  /* ---- B2. TABLET ---- */
-  @media (min-width:600px) and (min-height:430px){
-    :root{--c:min(calc(100vw / 860), calc(100vh / 1120))}
-    body{padding:calc(env(safe-area-inset-top) + calc(var(--c)*40)) calc(var(--c)*44)
-                 calc(env(safe-area-inset-bottom) + calc(var(--c)*36))}
-    .brand svg{width:calc(var(--c)*34)}   #word{font-size:calc(var(--c)*30)}
-    .burger{width:calc(var(--c)*60);height:calc(var(--c)*44)}
-    .burger svg{width:calc(var(--c)*27);stroke-width:1.2}
-    .navpanel{width:min(calc(var(--c)*330), 56vw);padding:calc(var(--c)*16);
-              border-radius:calc(var(--c)*26);gap:calc(var(--c)*4)}
-    .navpanel .menu a,.navpanel .login{font-size:calc(var(--c)*20);
-      padding:calc(var(--c)*13) calc(var(--c)*15);border-radius:calc(var(--c)*15);
-      gap:calc(var(--c)*10)}
-    .navpanel .caret{width:calc(var(--c)*13)}
-    .navpanel .navarrow{width:calc(var(--c)*14)}
-    .navpanel .pill{margin-top:calc(var(--c)*10);
-      padding:calc(var(--c)*14) calc(var(--c)*20);font-size:calc(var(--c)*19)}
-    .hero{gap:calc(var(--c)*26)}
-    .title{font-size:calc(var(--c)*46);line-height:1.15;max-width:none}
-    .title span{display:block}
-    .sub{font-size:calc(var(--c)*21);line-height:1.34;max-width:none}
-    .sub span{display:block}
-    .cta{gap:calc(var(--c)*14);padding:calc(var(--c)*18) calc(var(--c)*34);
-         font-size:calc(var(--c)*21)}
-    .cta .arrow{width:calc(var(--c)*20);height:calc(var(--c)*14)}
-    .feats{grid-template-columns:repeat(2,max-content);justify-content:center;
-      gap:calc(var(--c)*22) calc(var(--c)*54);max-width:none;
-      margin-top:calc(var(--c)*12)}
-    .feats li{gap:calc(var(--c)*12);font-size:calc(var(--c)*16)}
-    .feats .chev{width:calc(var(--c)*12);height:calc(var(--c)*21)}
-    .rule{height:calc(var(--c)*46);margin:calc(var(--c)*30) auto 0}
-    .foot{font-size:calc(var(--c)*16)}
-
-    @media (min-aspect-ratio:1/1){
-      :root{--c:min(calc(100vw / 1040), calc(100vh / 780))}
-      .feats{grid-template-columns:repeat(4,max-content);gap:calc(var(--c)*40)}
-    }
-  }
-}
-
-/* ===================== DYNAMIC VIEWPORT OVERRIDE ===================== */
-@supports (height:100dvh){
-  @media (max-width:1199px),(max-height:559px),(max-aspect-ratio:100/95){
-    :root{--c:min(calc(100vw / 430), calc(100dvh / 860))}
-    body{height:100dvh}
-    @media (max-width:599px),(max-height:429px){
-      :root{--c:min(calc(100vw / 360), calc(100dvh / 770), 1px)}}
-    @media (max-height:429px) and (min-aspect-ratio:1/1){
-      :root{--c:min(calc(100vw / 760), calc(100dvh / 430))}}
-    @media (min-width:600px) and (min-height:430px){
-      :root{--c:min(calc(100vw / 860), calc(100dvh / 1120))}
-      @media (min-aspect-ratio:1/1){
-        :root{--c:min(calc(100vw / 1040), calc(100dvh / 780))}}}
-  }
-}
-
-/* ===================== REDUCED MOTION ===================== */
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-
-<video class="art" autoplay muted loop playsinline preload="auto" aria-hidden="true"
-  poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/130837c4-0244-4f37-9c61-8d801d93fd29.jpg"
-  src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104303_0c6d60b2-9353-408e-9449-585108a22fb5.mp4"></video>
-
-<div class="veil"></div>
-
-<header class="bar">
-  <a class="brand" href="#">
-    <svg viewBox="0 0 23 17" aria-hidden="true">
-      <path d="M8.15 0.9 L4.55 0.9 L0.5 9.3 L4.1 9.3 Z"></path>
-      <path d="M17.0 0 L13.4 0 L6.15 16.4 L9.75 16.4 Z"></path>
-      <path d="M22.9 0 L19.3 0 L15.0 7.6 L18.6 7.6 Z"></path>
-      <path d="M22.6 6.9 L19.0 6.9 L14.05 16.4 L17.65 16.4 Z"></path>
-    </svg>
-    <span id="word">마중</span>
-  </a>
-  <input class="navtoggle" type="checkbox" id="nav-open">
-  <label class="scrim" for="nav-open" aria-hidden="true"></label>
-  <label class="burger" for="nav-open" aria-label="Menu">
-    <svg viewBox="0 0 22 14" aria-hidden="true">
-      <path class="b1" d="M1 1 H21"></path>
-      <path class="b2" d="M1 7 H21"></path>
-      <path class="b3" d="M1 13 H21"></path>
-    </svg>
-  </label>
-  <div class="navpanel">
-    <nav class="menu">
-      <a href="#"><span id="about">About</span></a>
-      <a href="#"><span id="product">Product</span></a>
-      <a href="#"><span id="solutions">Solutions</span>
-         <svg class="caret" viewBox="0 0 9 6" aria-hidden="true">
-           <path d="M0.7 1.1 L4.5 4.6 L8.3 1.1"></path></svg></a>
-    </nav>
-    <a class="login" href="#"><span id="login">Log in / Request access</span>
-       <svg class="navarrow" viewBox="0 0 10 9" aria-hidden="true">
-         <path d="M0 4.5 H9.1 M5.4 0.9 L9.2 4.5 L5.4 8.1"></path></svg></a>
-    <a class="pill" href="#"><span id="contact">Contact sales</span></a>
+<div class="stage">
+  <div class="bg" role="img" aria-label="A stone arch standing in still water between dark mountains at dusk">
+    <video class="on" data-chapter="vision" src="assets/video/background.mp4" poster="assets/img/background.webp" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <video data-chapter="expression" data-src="assets/video/expression.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <video data-chapter="craftsmanship" data-src="assets/video/craftsmanship.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <video data-chapter="refinement" data-src="assets/video/refinement.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <video data-chapter="balance" data-src="assets/video/balance.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <video data-chapter="origin" data-src="assets/video/origin.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
   </div>
-</header>
 
-<main class="hero">
-  <h1 class="title"><span id="h1a">World-Class Digital Products</span>
-     <span id="h1b">Work on Time, Right on Target.</span></h1>
-  <p class="sub"><span id="sub1">We build extraordinary products</span>
-     <span id="sub2">for ambitious teams.</span></p>
-  <a class="cta" href="#"><span id="cta">Get started today</span>
-     <svg class="arrow" viewBox="0 0 16 11" aria-hidden="true">
-       <path d="M0 5.5 H14.6 M10.3 1.2 L14.9 5.5 L10.3 9.8"></path></svg></a>
-  <ul class="feats">
-    <li><svg class="chev" viewBox="0 0 11 20" aria-hidden="true"><path d="M1.15 1.15 L9.6 10 L1.15 18.85"></path></svg><span id="f1">Strategic partner</span></li>
-    <li><svg class="chev" viewBox="0 0 11 20" aria-hidden="true"><path d="M1.15 1.15 L9.6 10 L1.15 18.85"></path></svg><span id="f2">End-to-end delivery</span></li>
-    <li><svg class="chev" viewBox="0 0 11 20" aria-hidden="true"><path d="M1.15 1.15 L9.6 10 L1.15 18.85"></path></svg><span id="f3">Long-term impact</span></li>
-    <li><svg class="chev" viewBox="0 0 11 20" aria-hidden="true"><path d="M1.15 1.15 L9.6 10 L1.15 18.85"></path></svg><span id="f4">Long-term impact</span></li>
-  </ul>
-  <span class="rule" aria-hidden="true"></span>
-</main>
+  <div class="frame">
+    <span class="ln ln-t"></span><span class="ln ln-b"></span>
+    <span class="ln ln-l"></span><span class="ln ln-r"></span>
+    <span class="cn cn-tl"></span><span class="cn cn-tr"></span>
+    <span class="cn cn-bl"></span><span class="cn cn-br"></span>
 
-<footer class="foot">
-  <span id="foot1">Trusted by innovative teams around the world.</span>
-  <span id="foot2">2024</span>
-</footer>
+    <a class="logo" href="#" aria-label="마중 — home">
+      <span class="wm">마중</span>
+    </a>
+
+    <nav class="masthead" aria-label="Main">
+      <div class="navset" id="navset">
+      <div class="links lbl">
+        <a href="#story"><span class="t">이야기</span></a><a href="#concepts"><span class="t">콘셉트</span></a><a href="#process"><span class="t">과정</span></a><a href="#connect"><span class="t">문의</span></a><a href="#film"><span class="t">영상</span></a>
+      </div>
+      <a class="pill enter lbl" href="#enter">
+        <svg class="ico" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="0" y="0" width="4" height="5"/><rect x="3" y="4" width="4" height="4"/><rect x="0" y="7" width="4" height="4"/></svg>
+        <span class="t">입장</span>
+      </a>
+      </div>
+      <button class="pill menu lbl" type="button" aria-expanded="false" aria-controls="navset">
+        <svg class="ico" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="0" y="0" width="4" height="4" rx=".8"/><rect x="6" y="0" width="4" height="4" rx=".8"/><rect x="0" y="6" width="4" height="4" rx=".8"/><rect x="6" y="6" width="4" height="4" rx=".8"/></svg>
+        <span class="t">메뉴</span>
+      </button>
+    </nav>
+
+    <ul class="index" aria-label="Chapters">
+      <li class="on"><a href="#vision" aria-current="true"><span class="t">비전</span></a></li>
+      <li><a href="#expression"><span class="t">표현</span></a></li>
+      <li><a href="#craftsmanship"><span class="t">장인정신</span></a></li>
+      <li><a href="#refinement"><span class="t">정제</span></a></li>
+      <li><a href="#balance"><span class="t">균형</span></a></li>
+      <li><a href="#origin"><span class="t">기원</span></a></li>
+    </ul>
+
+    <div class="hero">
+      <h1 class="headline"><span class="hrow"><span class="hrise">우리는 거리마다의 </span></span><span class="hrow"><span class="hrise">정신을 세웁니다</span></span></h1>
+      <p class="blurb">45년이 넘는 시간 동안, 마중은 인도에서 가장 사려 깊은 부동산<br>
+        개발들을 기획하며 현대적인 주거·상업·산업 개념을 하나로 엮어<br>
+        왔습니다. 최초의 설계 의뢰부터 실현까지, 사람이 머물 공간을<br>
+        만듭니다.</p>
+      <a class="cta lbl" href="#approach">
+        <span class="cta-glass"></span>
+        <svg class="cta-edge" viewBox="0 0 190 41" preserveAspectRatio="none" aria-hidden="true"><path d="M3.5.5 H179.5 L189.5 10.5 V37.5 L186.5 40.5 H10.5 L.5 30.5 V3.5 Z" vector-effect="non-scaling-stroke"/></svg>
+        <span class="cta-in">
+          <svg class="ico" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="0" y="0" width="4" height="5"/><rect x="3" y="4" width="4" height="4"/><rect x="0" y="7" width="4" height="4"/></svg>
+          <span class="t">우리의 접근 방식 보기</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="dock">
+      <span class="rule"></span><span class="div div-l"></span><span class="div div-r"></span>
+
+      <button class="audio lbl" type="button" aria-pressed="true">
+        <svg class="ico" viewBox="0 0 14 11" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7 0 L7 11 L0.6 7.6 L0.6 3.4 Z" stroke="none"/>
+          <path class="wave" d="M9.4 2.2 C10.9 4 10.9 7 9.4 8.8" fill="none" stroke-width="1.3" stroke-linecap="round"/>
+          <path class="wave" d="M11.9 0.6 C14.1 3.3 14.1 7.7 11.9 10.4" fill="none" stroke-width="1.3" stroke-linecap="round"/>
+          <path class="slash" d="M9.2 2.4 L13.8 8.6 M13.8 2.4 L9.2 8.6" fill="none" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="t">오디오 켜짐</span>
+      </button>
+
+      <a class="scroll lbl" href="#approach">
+        <svg class="ico" viewBox="0 0 5 7" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 0 H5 L2.5 3 Z"/><path d="M0 4 H5 L2.5 7 Z"/></svg>
+        <span class="t">스크롤하여 더보기</span>
+      </a>
+
+      <a class="talk lbl" href="#contact">
+        <span class="t">문의하기</span>
+        <svg class="ico" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M8 .8 C12 .8 15.2 3.8 15.2 7.4 C15.2 11 12 14 8 14 C6.6 14 5.3 13.6 4.2 13 L.9 13.9 L1.9 10.9 C1.2 9.9 .8 8.7 .8 7.4 C.8 3.8 4 .8 8 .8 Z"/>
+          <g fill="currentColor" stroke="none"><circle cx="5.2" cy="7.4" r=".95"/><circle cx="8" cy="7.4" r=".95"/><circle cx="10.8" cy="7.4" r=".95"/></g>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
 
 <div class="ov" id="ov" aria-hidden="true">
-  <div class="ov-card" role="dialog" aria-modal="true" aria-labelledby="ov-title" tabindex="-1">
-    <button class="ov-x" id="ov-x" type="button" aria-label="Close">
-      <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1 L13 13 M13 1 L1 13"></path></svg>
-    </button>
-    <div class="ov-kicker" id="ov-kicker"></div>
-    <h2 class="ov-title" id="ov-title"></h2>
-    <div class="ov-body" id="ov-body"></div>
+  <div class="ov-card" role="dialog" aria-modal="true" aria-labelledby="ovH" tabindex="-1">
+    <button class="ov-x" id="ovX" type="button" aria-label="닫기">✕</button>
+    <div class="ov-k" id="ovK"></div>
+    <h2 class="ov-h" id="ovH"></h2>
+    <div class="ov-b" id="ovB"></div>
   </div>
 </div>
 
 <script>
-/* (a) Honour reduced-motion for the background VIDEO (CSS reset can't reach it) */
 (function(){
-  var q=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)'),
-      v=document.querySelector('video.art');
-  if(!q||!v)return;
-  function sync(){ if(q.matches){v.pause();}
-                   else{var p=v.play();if(p)p.catch(function(){});} }
-  sync();
-  q.addEventListener ? q.addEventListener('change',sync) : q.addListener(sync);
-})();
+  "use strict";
+  var RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CH = '가나다라마바사아자차카타파하거너더러머버서어저처커터퍼허고노도로모보소오조초코토포호구누두루무부수우주추쿠투푸후그느드르므브스으즈';
+  var DUR = 400;   /* every label resolves in the same time, whatever its length */
 
-/* (b) Retire the entrance once the last tween ends, so a breakpoint change
-       can never replay it. Self-removing listener + 4000ms safety net. */
-(function(){
-  var root=document.documentElement, last=document.getElementById('foot2'), t;
-  function done(){ clearTimeout(t);
-    if(last) last.removeEventListener('animationend',done);
-    root.classList.add('is-entered'); }
-  if(last) last.addEventListener('animationend',done);
-  t=setTimeout(done,4000);
-})();
+  /* ---------------------------------------------------------------
+     1. DECODE LABELS
+     Every interactive label resolves left-to-right with a short band
+     of random letters running ahead of the resolved characters and
+     nothing rendered beyond it — the behaviour in the reference clip.
+     Each label's natural width is reserved first so a scramble can
+     never reflow the row it sits in.
+  ---------------------------------------------------------------- */
+  var labels = [].slice.call(document.querySelectorAll('.t'));
+  labels.forEach(function(el){ el.dataset.text = el.textContent; });
 
-/* (c) Top-right nav items open their content in an overlay (click to view) */
-(function(){
-  var ov=document.getElementById('ov'),
-      card=ov.querySelector('.ov-card'),
-      kicker=document.getElementById('ov-kicker'),
-      title=document.getElementById('ov-title'),
-      bodyEl=document.getElementById('ov-body'),
-      toggle=document.getElementById('nav-open'),
-      lastFocus=null;
+  function reserve(){
+    var w = [];
+    labels.forEach(function(el){ el.style.width = ''; });
+    labels.forEach(function(el){ w.push(el.getBoundingClientRect().width); });
+    labels.forEach(function(el,i){ el.style.width = (Math.ceil(w[i]*100)/100) + 'px'; });
+  }
 
-  var C={
-    about:{k:'Studio',t:'About 마중',h:
-      '<p>마중(MAJUNG) is a product studio for teams who refuse to ship the ordinary. '+
-      'We pair senior design and engineering into one accountable team that owns '+
-      'outcomes — not tickets.</p>'+
-      '<h3>How we think</h3>'+
-      '<ul><li>Strategy and craft in the same room</li>'+
-      '<li>Small teams, senior people, direct access</li>'+
-      '<li>We measure impact, not activity</li></ul>'+
-      '<p>Founded by operators who have shipped products used by millions.</p>'+
-      '<a class="ov-cta" href="#" data-open="contact">Work with 마중</a>'},
-    product:{k:'Platform',t:'The Product',h:
-      '<p>A composable platform that takes an idea from prototype to production '+
-      'without the usual re-writes.</p>'+
-      '<h3>What you get</h3>'+
-      '<ul><li><strong>Design system</strong> — tokens, components, motion, in code</li>'+
-      '<li><strong>App foundation</strong> — auth, billing, analytics wired on day one</li>'+
-      '<li><strong>Delivery pipeline</strong> — preview, test, ship continuously</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="start">Book a walkthrough</a>'},
-    solutions:{k:'Solutions',t:'Solutions',h:
-      '<p>Tailored engagements for ambitious teams at any stage.</p>'+
-      '<h3>Engagements</h3>'+
-      '<ul><li><strong>0→1</strong> — validate and launch a new product</li>'+
-      '<li><strong>Scale-up</strong> — rebuild for growth and reliability</li>'+
-      '<li><strong>Design partner</strong> — embed with your team long-term</li>'+
-      '<li><strong>Audit</strong> — a clear plan to fix what is slowing you down</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="contact">Discuss your project</a>'},
-    login:{k:'Access',t:'Log in / Request access',h:
-      '<p>마중 is currently invite-only for partner teams.</p>'+
-      '<h3>Already a partner?</h3>'+
-      '<p>Use the workspace link in your onboarding email to sign in.</p>'+
-      '<h3>New here?</h3>'+
-      '<p>Request access and we will reach out within one business day.</p>'+
-      '<a class="ov-cta" href="mailto:access@xn--hz2bo3z.kr">Request access</a>'},
-    contact:{k:'Contact',t:'Contact sales',h:
-      '<p>Tell us what you are building. We reply to every serious enquiry within '+
-      'one business day.</p>'+
-      '<h3>Direct</h3>'+
-      '<p><strong>sales@마중.kr</strong><br>+82 2-1234-5678</p>'+
-      '<a class="ov-cta" href="mailto:sales@xn--hz2bo3z.kr">Email the team</a>'},
-    start:{k:'Get started',t:'Get started today',h:
-      '<p>From first call to shipped product — here is how working with 마중 begins.</p>'+
-      '<h3>How it works</h3>'+
-      '<ul><li><strong>1 · Discovery</strong> — a 30-minute call to understand your goal</li>'+
-      '<li><strong>2 · Plan</strong> — scope, timeline and a fixed first milestone</li>'+
-      '<li><strong>3 · Build</strong> — weekly shippable progress, direct access to the team</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="contact">Start the conversation</a>'},
-    f1:{k:'Capability',t:'Strategic partner',h:
-      '<p>We sit at the table from day one — shaping roadmap, scope and priorities '+
-      'with your team, not just executing tickets.</p>'+
-      '<ul><li>Product strategy and prioritisation</li>'+
-      '<li>Honest trade-off calls, backed by data</li>'+
-      '<li>One senior point of contact throughout</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="contact">Talk strategy</a>'},
-    f2:{k:'Capability',t:'End-to-end delivery',h:
-      '<p>Design, engineering, QA and release under one roof. One accountable team '+
-      'owns the outcome from idea to production.</p>'+
-      '<ul><li>Design systems built directly in code</li>'+
-      '<li>Continuous preview, test and ship pipeline</li>'+
-      '<li>No hand-off gaps between design and build</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="start">See the process</a>'},
-    f3:{k:'Capability',t:'Long-term impact',h:
-      '<p>We build for the long run — maintainable systems, clear documentation and '+
-      'clean handover so value keeps compounding after launch.</p>'+
-      '<ul><li>Maintainable, well-documented codebases</li>'+
-      '<li>Knowledge transfer to your team</li>'+
-      '<li>Measured against business outcomes</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="contact">Build for the long run</a>'},
-    f4:{k:'Capability',t:'Long-term impact',h:
-      '<p>We build for the long run — maintainable systems, clear documentation and '+
-      'clean handover so value keeps compounding after launch.</p>'+
-      '<ul><li>Maintainable, well-documented codebases</li>'+
-      '<li>Knowledge transfer to your team</li>'+
-      '<li>Measured against business outcomes</li></ul>'+
-      '<a class="ov-cta" href="#" data-open="contact">Build for the long run</a>'}
+  function settle(el){
+    if (el._raf){ cancelAnimationFrame(el._raf); el._raf = 0; }
+    if (el._t){ clearTimeout(el._t); el._t = 0; }
+    el.textContent = el.dataset.text;
+  }
+
+  function decode(el, dur){
+    var text = el.dataset.text, n = text.length;
+    if (RM){ settle(el); return; }
+    settle(el);
+    var D = dur || DUR;
+    var t0 = performance.now(), lastRoll = 0;
+    var rand = new Array(n);
+    function roll(){ for (var i=0;i<n;i++) rand[i] = CH.charAt((Math.random()*26)|0); }
+    roll();
+    function step(now){
+      var p = Math.min(1, (now - t0) / D), front = p * n, out = '', i;
+      if (now - lastRoll > 45){ roll(); lastRoll = now; }
+      for (i = 0; i < n; i++){
+        var c = text.charAt(i);
+        if (i < front) out += c;
+        else if (i < front + 3.6) out += (c === ' ' ? ' ' : rand[i]);
+        else break;
+      }
+      el.textContent = out;
+      if (p < 1) el._raf = requestAnimationFrame(step); else settle(el);
+    }
+    el._raf = requestAnimationFrame(step);
+    /* if frames are throttled (background tab, reduced power), the label still
+       resolves on its own rather than sitting half-decoded */
+    el._t = setTimeout(function(){ settle(el); }, D + 500);
+  }
+
+  [].forEach.call(document.querySelectorAll('a, button'), function(el){
+    var t = el.querySelector('.t');
+    if (!t) return;
+    el.addEventListener('pointerenter', function(){ decode(t); });
+  });
+
+  /* ---------------------------------------------------------------
+     2. SCENE PARALLAX
+     The hero image answers the pointer on a long ease and drifts
+     against it, zooming very slightly as the pointer drops toward the
+     foot of the screen. With no pointer input the transform is
+     identity, so the resting frame is the reference frame.
+  ---------------------------------------------------------------- */
+  var bg = document.querySelector('.bg');
+  var tx = 0, ty = 0, cx = 0, cy = 0, running = false;
+
+  function tick(){
+    cx += (tx - cx) * 0.045;
+    cy += (ty - cy) * 0.045;
+    var w = innerWidth, h = innerHeight;
+    var dx = -cx * w * 0.0156, dy = -cy * h * 0.015;
+    var cover = 2 * Math.max(Math.abs(dx) / w, Math.abs(dy) / h);
+    var sc = 1 + cover + 0.014 * Math.max(0, cy);
+    bg.style.transform = 'translate3d(' + dx.toFixed(2) + 'px,' + dy.toFixed(2) + 'px,0) scale(' + sc.toFixed(4) + ')';
+    if (Math.abs(tx - cx) < 0.0004 && Math.abs(ty - cy) < 0.0004){ running = false; return; }
+    requestAnimationFrame(tick);
+  }
+  function wake(){ if (!running && !RM){ running = true; requestAnimationFrame(tick); } }
+
+  window.addEventListener('pointermove', function(e){
+    if (e.pointerType === 'touch') return;
+    tx = (e.clientX / innerWidth) * 2 - 1;
+    ty = (e.clientY / innerHeight) * 2 - 1;
+    wake();
+  }, {passive:true});
+  document.addEventListener('pointerleave', function(){ tx = 0; ty = 0; wake(); });
+
+  /* ---------------------------------------------------------------
+     3. SMALL STATE CHANGES
+  ---------------------------------------------------------------- */
+  var audio = document.querySelector('.audio');
+  audio.addEventListener('click', function(){
+    var on = audio.getAttribute('aria-pressed') === 'true';
+    audio.setAttribute('aria-pressed', String(!on));
+    audio.classList.toggle('muted', on);
+    var t = audio.querySelector('.t');
+    t.dataset.text = on ? '오디오 꺼짐' : '오디오 켜짐';
+    decode(t);
+  });
+
+  [].forEach.call(document.querySelectorAll('.index a'), function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      [].forEach.call(document.querySelectorAll('.index li'), function(li){ li.classList.remove('on'); });
+      [].forEach.call(document.querySelectorAll('.index a'), function(x){ x.removeAttribute('aria-current'); });
+      a.parentNode.classList.add('on');
+      a.setAttribute('aria-current', 'true');
+      decode(a.querySelector('.t'));
+      showChapter(a.getAttribute('href').slice(1));
+    });
+  });
+
+  /* ---------------------------------------------------------------
+     3b. CHAPTERS
+     Each chapter of the rail has its own Seedance clip and its own
+     headline and paragraph. The next clip loads on demand and fades up
+     once it can play; the copy drops out, is swapped, and rises back in.
+     A newer choice always wins over one still loading or mid-swap.
+  ---------------------------------------------------------------- */
+  var COPY = {
+    vision: [['우리는 거리마다의 ', '정신을 세웁니다'],
+      ['45년이 넘는 시간 동안, 마중은 인도에서 가장 사려 깊은 부동산',
+       '개발들을 기획하며 현대적인 주거·상업·산업 개념을 하나로 엮어',
+       '왔습니다. 최초의 설계 의뢰부터 실현까지, 사람이 머물 공간을',
+       '만듭니다.']],
+    expression: [['모든 파사드는 ', '저마다의 이야기를 전합니다'],
+      ['건축은 공간이 스스로를 소개하는 방식입니다. 우리는 각 프로젝트에',
+       '거리와 기후, 그리고 매일 그곳에서 살아갈 사람들로부터 빚어진',
+       '분명한 목소리를 부여합니다. 그리하여 완공된 뒤에도 오래도록',
+       '기억됩니다.']],
+    craftsmanship: [['손으로 짓고, ', '오래도록 남도록'],
+      ['우리 팀은 돌과 나무, 빛을 장인이 하나의 작품을 다루듯',
+       '다룹니다. 모든 이음새와 표면을 디테일이 완성될 때까지',
+       '시험하며, 첫 기초에서 각 공간의 마지막 마감에 이르기까지',
+       '정성을 담습니다.']],
+    refinement: [['군더더기 없이, ', '모자람 없이'],
+      ['모든 설계는 마지막으로 그려지기까지 수많은 손을 거칩니다.',
+       '산만한 것은 덜어내고 본질은 더 날카롭게 다듬어, 건물이 어느',
+       '각도에서 보아도 필연적이고 고요하며 정연하게 느껴질 때까지',
+       '나아갑니다.']],
+    balance: [['땅이 그 주변의 ', '삶과 만나는 곳'],
+      ['우리는 밀도와 열린 공간, 상업성과 고요함, 야망과 장소를',
+       '저울질합니다. 그리하여 각 개발이 오늘날은 물론 다가올',
+       '세대까지, 주변 도시와 조화를 이루며 제 역할을 다하도록',
+       '만듭니다.']],
+    origin: [['우리가 짓는 ', '땅에 뿌리내려'],
+      ['마중은 단순한 믿음에서 시작되었습니다. 좋은 건물이 좋은 거리를',
+       '만들고, 좋은 거리가 좋은 도시를 만든다는 믿음. 45년이 지난',
+       '지금도 그 믿음은 우리가 받아들이는 모든 의뢰와, 사람들에게',
+       '건네는 모든 공간을 이끕니다.']]
   };
+  var hero = document.querySelector('.hero');
+  var rises = [].slice.call(hero.querySelectorAll('.hrise'));
+  var blurb = hero.querySelector('.blurb');
+  var scenes = [].slice.call(document.querySelectorAll('.bg video'));
+  var chapter = 'vision', swapT = 0;
 
-  function open(key){
-    var c=C[key]; if(!c) return;
-    kicker.textContent=c.k; title.textContent=c.t; bodyEl.innerHTML=c.h;
-    lastFocus=document.activeElement;
-    ov.classList.add('open'); ov.setAttribute('aria-hidden','false');
-    if(toggle) toggle.checked=false;           /* close burger on mobile */
-    card.focus();
+  function showScene(v){
+    if (!v.getAttribute('src')){ v.preload = 'auto'; v.src = v.dataset.src; v.load(); }
+    function go(){
+      if (v.dataset.chapter !== chapter) return;
+      try { v.currentTime = 0; } catch(err){}
+      var pr = v.play(); if (pr && pr.catch) pr.catch(function(){});
+      scenes.forEach(function(o){
+        if (o === v){ o.classList.add('on'); return; }
+        if (!o.classList.contains('on')) return;
+        o.classList.remove('on');
+        setTimeout(function(){ if (!o.classList.contains('on')) o.pause(); }, 950);
+      });
+    }
+    if (v.readyState >= 3) go(); else v.addEventListener('canplay', go, { once: true });
   }
-  function close(){
-    ov.classList.remove('open'); ov.setAttribute('aria-hidden','true');
-    if(lastFocus&&lastFocus.focus) lastFocus.focus();
+
+  function showChapter(id){
+    if (!COPY[id] || id === chapter) return;
+    chapter = id;
+    scenes.forEach(function(v){ if (v.dataset.chapter === id) showScene(v); });
+    var c = COPY[id];
+    clearTimeout(swapT);
+    hero.classList.add('swapping');
+    swapT = setTimeout(function(){
+      rises[0].textContent = c[0][0];
+      rises[1].textContent = c[0][1];
+      blurb.textContent = '';
+      c[1].forEach(function(line, i){
+        if (i) blurb.appendChild(document.createElement('br'));
+        blurb.appendChild(document.createTextNode(i ? '\n        ' + line : line));
+      });
+      void hero.offsetWidth;
+      hero.classList.remove('swapping');
+    }, RM ? 0 : 500);
   }
 
-  /* wire the five top-right items by the id of the label they contain */
-  var items=document.querySelectorAll('.menu a, .login, .pill');
-  Array.prototype.forEach.call(items,function(a){
-    var span=a.querySelector('span[id]'); if(!span) return;
-    a.addEventListener('click',function(e){ e.preventDefault(); open(span.id); });
+  /* the MENU pill is the burger: below 720px it opens the same nav set as a
+     panel. Label decodes between MENU and CLOSE using the site's own effect. */
+  var menu = document.querySelector('.menu');
+  var navset = document.getElementById('navset');
+  var menuLabel = menu.querySelector('.t');
+  var root = document.documentElement;
+
+  function setMenu(open){
+    root.classList.toggle('nav-open', open);
+    menu.setAttribute('aria-expanded', String(open));
+    menuLabel.dataset.text = open ? '닫기' : '메뉴';
+    decode(menuLabel);
+    if (open) requestAnimationFrame(function(){
+      var first = navset.querySelector('a');
+      if (first) try { first.focus(); } catch(err){}
+    });
+  }
+  menu.addEventListener('click', function(e){
+    e.stopPropagation();
+    setMenu(!root.classList.contains('nav-open'));
+  });
+  navset.addEventListener('click', function(e){
+    if (e.target.closest('a')) setMenu(false);
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && root.classList.contains('nav-open')){ setMenu(false); menu.focus(); }
+  });
+  document.addEventListener('click', function(e){
+    if (root.classList.contains('nav-open') && !navset.contains(e.target) && e.target !== menu)
+      setMenu(false);
+  });
+  addEventListener('resize', function(){
+    if (innerWidth > 830 && root.classList.contains('nav-open')) setMenu(false);
   });
 
-  /* wire the rest of the content: hero CTA, brand, and the four feature items */
-  var cta=document.querySelector('.cta');
-  if(cta) cta.addEventListener('click',function(e){ e.preventDefault(); open('start'); });
-  var brand=document.querySelector('.brand');
-  if(brand) brand.addEventListener('click',function(e){ e.preventDefault(); open('about'); });
-  Array.prototype.forEach.call(document.querySelectorAll('.feats li'),function(li){
-    var span=li.querySelector('span[id]'); if(!span) return;
-    li.style.cursor='pointer';
-    li.addEventListener('click',function(e){ e.preventDefault(); open(span.id); });
+  /* ---------------------------------------------------------------
+     3c. MENU CONTENT — the top nav opens its content in an overlay
+     (이야기 · 콘셉트 · 과정 · 문의 · 영상). 입장(ENTER) opens 이야기.
+  ---------------------------------------------------------------- */
+  var OV = {
+    story: { k: 'STORY', h: '마중 이야기', b:
+      '<p>마중은 45년이 넘는 시간 동안 인도에서 가장 사려 깊은 부동산 개발을 기획해 온 종합 디벨로퍼입니다.</p>' +
+      '<p>현대적인 <strong>주거·상업·산업</strong> 개념을 하나로 엮어, 최초의 설계 의뢰부터 실현까지 사람이 머물 공간을 만듭니다.</p>' +
+      '<p>좋은 건물이 좋은 거리를 만들고, 좋은 거리가 좋은 도시를 만든다 — 이 단순한 믿음이 우리의 모든 작업을 이끕니다.</p>' },
+    concepts: { k: 'CONCEPTS', h: '여섯 개의 장(章)', b:
+      '<p>마중의 철학은 여섯 개의 장으로 이야기됩니다.</p>' +
+      '<ul>' +
+      '<li><strong>비전</strong> — 거리마다의 정신을 세우다</li>' +
+      '<li><strong>표현</strong> — 모든 파사드는 저마다의 이야기를 전한다</li>' +
+      '<li><strong>장인정신</strong> — 손으로 짓고, 오래도록 남도록</li>' +
+      '<li><strong>정제</strong> — 군더더기 없이, 모자람 없이</li>' +
+      '<li><strong>균형</strong> — 땅이 그 주변의 삶과 만나는 곳</li>' +
+      '<li><strong>기원</strong> — 우리가 짓는 땅에 뿌리내려</li>' +
+      '</ul>' +
+      '<p>좌측 인덱스에서 각 장을 선택하면 영상과 함께 보실 수 있습니다.</p>' },
+    process: { k: 'PROCESS', h: '설계 의뢰에서 실현까지', b:
+      '<p>모든 프로젝트는 같은 과정을 거쳐 완성됩니다.</p>' +
+      '<ul>' +
+      '<li><strong>1 · 브리프</strong> — 장소와 사람, 목적을 이해합니다</li>' +
+      '<li><strong>2 · 기획</strong> — 밀도와 용도, 동선을 저울질합니다</li>' +
+      '<li><strong>3 · 설계</strong> — 수많은 손을 거쳐 본질만 남깁니다</li>' +
+      '<li><strong>4 · 시공</strong> — 돌과 나무, 빛을 장인처럼 다룹니다</li>' +
+      '<li><strong>5 · 인도</strong> — 사람이 머물 공간을 건넵니다</li>' +
+      '</ul>' },
+    connect: { k: 'CONNECT', h: '문의', b:
+      '<p>프로젝트를 구상 중이시라면 언제든 연락 주세요. 진지한 문의에는 영업일 기준 하루 안에 답변드립니다.</p>' +
+      '<p><strong>㈜메타아이씨티</strong><br>이메일 hello@마중.kr<br>데모 https://마중.kr</p>' },
+    film: { k: 'FILM', h: '여섯 장면의 영상', b:
+      '<p>각 장은 하나의 영상으로 담겨 있습니다. 돌로 된 입면과 물 위의 반영, 빛의 호흡까지 — 좌측 인덱스에서 장을 선택해 감상하세요.</p>' +
+      '<ul>' +
+      '<li><strong>비전</strong> — 고요한 호수 위, 아치의 숨결</li>' +
+      '<li><strong>표현</strong> — 큐브를 도는 카메라</li>' +
+      '<li><strong>장인정신</strong> — 완전한 한 바퀴의 궤도</li>' +
+      '<li><strong>정제</strong> — 수로를 따라 내려오는 시선</li>' +
+      '<li><strong>균형</strong> — 거의 멈춘 듯한 프레임</li>' +
+      '<li><strong>기원</strong> — 큐브 위로 떠오르는 카메라</li>' +
+      '</ul>' }
+  };
+  var ov = document.getElementById('ov'),
+      ovK = document.getElementById('ovK'), ovH = document.getElementById('ovH'),
+      ovB = document.getElementById('ovB'), ovCard = ov.querySelector('.ov-card');
+  function ovOpen(key){
+    var d = OV[key]; if (!d) return;
+    ovK.textContent = d.k; ovH.textContent = d.h; ovB.innerHTML = d.b;
+    ov.classList.add('open'); ov.setAttribute('aria-hidden', 'false');
+    if (root.classList.contains('nav-open')) setMenu(false);
+    try { ovCard.focus(); } catch(err){}
+  }
+  function ovClose(){ ov.classList.remove('open'); ov.setAttribute('aria-hidden', 'true'); }
+  [].forEach.call(document.querySelectorAll('.links a, .enter'), function(a){
+    var id = (a.getAttribute('href') || '').replace('#', '');
+    if (id === 'enter') id = 'story';
+    if (!OV[id]) return;
+    a.addEventListener('click', function(e){ e.preventDefault(); ovOpen(id); });
+  });
+  document.getElementById('ovX').addEventListener('click', ovClose);
+  ov.addEventListener('click', function(e){ if (e.target === ov) ovClose(); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && ov.classList.contains('open')) ovClose();
   });
 
-  /* close interactions */
-  document.getElementById('ov-x').addEventListener('click',close);
-  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'&&ov.classList.contains('open')) close(); });
-  /* in-overlay cross-links (e.g. "Book a walkthrough" -> contact) */
-  bodyEl.addEventListener('click',function(e){
-    var el=e.target.closest('[data-open]'); if(!el) return;
-    e.preventDefault(); open(el.getAttribute('data-open'));
-  });
+  /* ---------------------------------------------------------------
+     4. BOOT — reserve widths once the face is ready, then run one
+     decode pass so the chrome resolves as the hero rises.
+  ---------------------------------------------------------------- */
+  function boot(){
+    reserve();
+    if (RM) return;
+    /* the decoding labels carry the same score as the CSS above: each group's
+       type resolves just after its container has begun arriving */
+    function at(sel, t0, step){
+      [].slice.call(document.querySelectorAll(sel)).forEach(function(el, i){
+        setTimeout(function(){ decode(el); }, t0 + i * (step || 0));
+      });
+    }
+    at('.enter .t', 330);
+    at('.menu .t', 390);
+    at('.links a .t', 360, 45);
+    at('.index li.on .t', 660);
+    at('.index li:not(.on) .t', 720, 55);
+    at('.cta .t', 900);
+    at('.dock .t', 1000, 60);
+    /* entrance is over by ~1.52s; the class comes off well after that and every
+       label is force-settled, so no motion can outlive the sequence */
+    setTimeout(function(){ document.documentElement.classList.remove('anim'); }, 2200);
+    setTimeout(function(){ labels.forEach(settle); }, 2600);
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else addEventListener('load', boot);
+
+  var rt;
+  addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(reserve, 160); });
 })();
 </script>
 </body>
